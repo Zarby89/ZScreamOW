@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinFormMono
+﻿namespace WinFormMono
 {
     public class Tile16
     {
-
-        public TileInfo tile0, tile1, tile2, tile3;
+        public TileInfo[] Info
+        {
+            get;
+        }
         //[0,1]
         //[2,3]
+
         public Tile16(TileInfo tile0, TileInfo tile1, TileInfo tile2, TileInfo tile3)
         {
-            this.tile0 = tile0;
-            this.tile1 = tile1;
-            this.tile2 = tile2;
-            this.tile3 = tile3;
+            Info = new TileInfo[4];
+            Info[0] = tile0;
+            Info[1] = tile1;
+            Info[2] = tile2;
+            Info[3] = tile3;
         }
-
     }
 }

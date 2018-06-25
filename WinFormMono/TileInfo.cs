@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinFormMono
+﻿namespace WinFormMono
 {
-    public class TileInfo
+    public struct TileInfo
     {
         public bool o, v, h; //o = over, v = vertical mirror, h = horizontal mirror
         public byte palette;
         public short id;
+
         public TileInfo(short id, byte palette, bool v, bool h, bool o)
         {
             this.id = id;

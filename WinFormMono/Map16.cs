@@ -1,186 +1,138 @@
-﻿
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinFormMono
 {
-    class Map16
+    class Map16 : IDisposable
     {
-        
-        IntPtr allgfx16array = Marshal.AllocHGlobal(962560);
         public ColorPalette pal;
-        IntPtr mapGfxArray = Marshal.AllocHGlobal(262144);
         public Bitmap mapGfx;
-        Bitmap allgfx16;
+
+        IntPtr mapGfxPtr = Marshal.AllocHGlobal(512 * 512);
         MapSave mapdata;
         Color[] currentPalette = new Color[256];
         MapInfos mapinfos;
-        public Map16(IntPtr allgfx8array, PaletteHandler allpalettes, MapInfos mapinfos, MapSave mapdata,Bitmap[] allBitmaps)
+
+        public Map16(IntPtr allgfx8Ptr, PaletteHandler allpalettes, MapInfos mapinfos, MapSave mapdata, Bitmap[] allBitmaps)
         {
             this.mapdata = mapdata;
             this.mapinfos = mapinfos;
-            allgfx16 = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16array);
-            mapGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, mapGfxArray);
 
-            loadPalette(allpalettes);
-            buildtileset(allgfx8array, allBitmaps);
-            buildTiles16Gfx(allgfx8array);
-            buildMap();
+            IntPtr allgfx16Ptr = Marshal.AllocHGlobal(128 * 7520);
+            Bitmap allgfx16Bitmap = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16Ptr);
+
+            mapGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, mapGfxPtr);
+
+            LoadPalette(allpalettes);
+            Buildtileset(allgfx8Ptr, allBitmaps);
+            BuildTiles16Gfx(allgfx8Ptr, allgfx16Ptr);
+            BuildMap(allgfx16Ptr);
+
+            Marshal.FreeHGlobal(allgfx16Ptr);
         }
 
-        public void buildMap()
+        public void Dispose()
         {
-            unsafe
-            {
-                byte* bytes = (byte*)mapGfxArray.ToPointer();
-                byte* bytes2 = (byte*)allgfx16array.ToPointer();
+            Marshal.FreeHGlobal(mapGfxPtr);
+        }
 
+        private unsafe void BuildMap(IntPtr allgfx16Ptr)
+        {
+            byte* gfxData = (byte*)mapGfxPtr.ToPointer();
+            byte* gfx16Data = (byte*)allgfx16Ptr.ToPointer();
+
+            for (int y = 0; y < 32; y++)
+            {
                 for (int x = 0; x < 32; x++)
                 {
-                    for (int y = 0; y < 32; y++)
+                    int mapPos = GetTilePos(x, y);
+                    for (int i = 0; i < 16; i++)
                     {
-                        int mapPos = getTilePos(x, y);
-                        for (int i = 0; i < 16; i++)
+                        for (int j = 0; j < 16; j++)
                         {
-                            for (int j = 0; j < 16; j++)
-                            {
-                                bytes[(x * 16) + (y * 8192) + j + (i * 512)] = bytes2[mapPos + j + (i * 128)];
-                            }
+                            gfxData[(x * 16) + (y * 8192) + j + (i * 512)] = gfx16Data[mapPos + j + (i * 128)];
                         }
                     }
                 }
             }
         }
 
-        public int getTilePos(int x, int y)
+        public int GetTilePos(int x, int y)
         {
             ushort tile = mapdata.tiles[x, y];
             return ((tile / 8) * 2048) + ((tile - ((tile / 8) * 8)) * 16);
-
         }
 
-        public void buildTiles16Gfx(IntPtr allgfx8array)
+        private unsafe void BuildTiles16Gfx(IntPtr allgfx8Ptr, IntPtr allgfx16Ptr)
         {
-            unsafe
+            var gfx16Data = (byte*)allgfx16Ptr.ToPointer();
+            var gfx8Data = (byte*)allgfx8Ptr.ToPointer();
+            int[] offsets = { 0, 8, 1024, 1032 };
+            var yy = 0;
+            var xx = 0;
+
+            for (var i = 0; i < 3748; i++) //number of tiles16
             {
-                byte* bytePointer = (byte*)allgfx16array.ToPointer();
-                byte* bytePointer2 = (byte*)allgfx8array.ToPointer();
-                uint yy = 0;
-                int xx = 0;
-                for (int i = 0; i < 3748; i++) //number of tiles16
+                //8x8 tile draw
+                //gfx8 = 4bpp so everyting is /2
+                var tiles = mapinfos.alltiles16[i];
+
+                for (var tile = 0; tile < 4; tile++)
                 {
+                    TileInfo info = tiles.Info[tile];
+                    int offset = offsets[tile];
 
-                    //8x8 tile draw
-                    //gfx8 = 4bpp so everyting is /2
-                    int mx;
-                    int my;
-                    byte r = 0;
-                    TileInfo tile;
-
-
-                    for (int y = 0; y < 8; y++)
+                    for (var y = 0; y < 8; y++)
                     {
-                        for (int x = 0; x < 4; x++)
+                        for (var x = 0; x < 4; x++)
                         {
-                            mx = x;
-                            my = y;
-                            r = 0;
-                            tile = mapinfos.alltiles16[i].tile0;
-                            if (tile.h)
-                            {
-                                mx = 3 - x;
-                                r = 1;
-                            }
-                            if (tile.v)
-                            {
-                                my = (7 - y);
-                            }
-                            int tx = ((tile.id / 16) * 512) + ((tile.id - ((tile.id / 16) * 16)) * 4);
-                            bytePointer[xx + yy + (mx * 2) + (my * 128) + r ^ 1] = (byte)((bytePointer2[tx + x + (y * 64)] & 0x0F) + (tile.palette) * 16);
-                            bytePointer[xx + yy + (mx * 2) + (my * 128) + r] = (byte)(((bytePointer2[tx + x + (y * 64)] >> 4) & 0x0F) + (tile.palette) * 16);
-
-                            mx = x;
-                            my = y;
-                            tile = mapinfos.alltiles16[i].tile1;
-                            r = 0;
-                            if (tile.h)
-                            {
-                                mx = 3 - x;
-                                r = 1;
-                            }
-                            if (tile.v)
-                            {
-                                my = (7 - y);
-                            }
-                            tx = ((tile.id / 16) * 512) + ((tile.id - ((tile.id / 16) * 16)) * 4);
-                            bytePointer[xx + yy + 8 + (mx * 2) + (my * 128) + r ^ 1] = (byte)((bytePointer2[tx + x + (y * 64)] & 0x0F) + (tile.palette) * 16);
-                            bytePointer[xx + yy + 8 + (mx * 2) + (my * 128) + r] = (byte)(((bytePointer2[tx + x + (y * 64)] >> 4) & 0x0F) + (tile.palette) * 16);
-
-                            mx = x;
-                            my = y;
-                            tile = mapinfos.alltiles16[i].tile2;
-                            r = 0;
-                            if (tile.h)
-                            {
-                                mx = 3 - x;
-                                r = 1;
-                            }
-                            if (tile.v)
-                            {
-                                my = (7 - y);
-                            }
-                            tx = ((tile.id / 16) * 512) + ((tile.id - ((tile.id / 16) * 16)) * 4);
-                            bytePointer[xx + yy + 1024 + (mx * 2) + (my * 128) + r ^ 1] = (byte)((bytePointer2[tx + x + (y * 64)] & 0x0F) + (tile.palette) * 16);
-                            bytePointer[xx + yy + 1024 + (mx * 2) + (my * 128) + r] = (byte)(((bytePointer2[tx + x + (y * 64)] >> 4) & 0x0F) + (tile.palette) * 16);
-
-                            mx = x;
-                            my = y;
-                            tile = mapinfos.alltiles16[i].tile3;
-                            r = 0;
-                            if (tile.h)
-                            {
-                                mx = 3 - x;
-                                r = 1;
-                            }
-                            if (tile.v)
-                            {
-                                my = (7 - y);
-                            }
-                            tx = ((tile.id / 16) * 512) + ((tile.id - ((tile.id / 16) * 16)) * 4);
-                            bytePointer[xx + yy + 1032 + (mx * 2) + (my * 128) + r ^ 1] = (byte)((bytePointer2[tx + x + (y * 64)] & 0x0F) + (tile.palette) * 16);
-                            bytePointer[xx + yy + 1032 + (mx * 2) + (my * 128) + r] = (byte)(((bytePointer2[tx + x + (y * 64)] >> 4) & 0x0F) + (tile.palette) * 16);
-
+                            CopyTile(x, y, xx, yy, offset, info, gfx16Data, gfx8Data);
                         }
                     }
-                    xx += 16;
-                    if (xx >= 128)
-                    {
-                        yy += 2048;
-                        xx = 0;
-                    }
-
                 }
 
+                xx += 16;
+                if (xx >= 128)
+                {
+                    yy += 2048;
+                    xx = 0;
+                }
             }
         }
 
-        public void loadPalette(PaletteHandler allpalettes)
+        private unsafe void CopyTile(int x, int y, int xx, int yy, int offset, TileInfo tile, byte* gfx16Pointer, byte* gfx8Pointer)
         {
+            int mx = x;
+            int my = y;
+            byte r = 0;
 
+            if (tile.h)
+            {
+                mx = 3 - x;
+                r = 1;
+            }
+            if (tile.v)
+            {
+                my = 7 - y;
+            }
+
+            int tx = ((tile.id / 16) * 512) + ((tile.id - ((tile.id / 16) * 16)) * 4);
+            var index = xx + yy + offset + (mx * 2) + (my * 128);
+            var pixel = gfx8Pointer[tx + (y * 64) + x];
+
+            gfx16Pointer[index + r ^ 1] = (byte)((pixel & 0x0F) + tile.palette * 16);
+            gfx16Pointer[index + r] = (byte)(((pixel >> 4) & 0x0F) + tile.palette * 16);
+        }
+
+        private void LoadPalette(PaletteHandler allpalettes)
+        {
             int paletteid = mapdata.palette;
             if (paletteid >= 0xA3)
             {
                 paletteid = 0xA3;
             }
-
 
             byte pal0 = 0;
             byte pal1 = allpalettes.palettesGroups[paletteid]; //aux1
@@ -253,23 +205,18 @@ namespace WinFormMono
             }
 
             animated = new Color[7];
-             
-            for(int i = 0;i<7;i++)
+
+            for (int i = 0; i < 7; i++)
             {
-                animated[i] = allpalettes.animatedPalettes[(pal3*7)+i];
+                animated[i] = allpalettes.animatedPalettes[(pal3 * 7) + i];
             }
 
             hud = allpalettes.hudPalettes[0];
 
-
-
-            setColorsPalette(main,animated,aux1,aux2,hud,bgr);
-
+            SetColorsPalette(main, animated, aux1, aux2, hud, bgr);
         }
 
-
-
-        public void setColorsPalette(Color[] main, Color[] animated, Color[] aux1, Color[] aux2, Color[] hud, Color bgrcolor)
+        private void SetColorsPalette(Color[] main, Color[] animated, Color[] aux1, Color[] aux2, Color[] hud, Color bgrcolor)
         {
             //Palettes infos, color 0 of a palette is always transparent (the arrays contains 7 colors width wide)
             //there is 16 color per line so 16*Y
@@ -325,7 +272,6 @@ namespace WinFormMono
                 currentPalette[i] = hud[i];
             }
 
-
             //Hardcoded grass color (that might change to become invisible instead)
             for (int i = 0; i < 8; i++)
             {
@@ -333,25 +279,21 @@ namespace WinFormMono
                 currentPalette[(i * 16) + 8] = bgrcolor;
             }
 
-
-            pal = (allgfx16).Palette;
+            pal = mapGfx.Palette;
             for (int i = 0; i < 256; i++)
             {
                 pal.Entries[i] = currentPalette[i];
             }
-            allgfx16.Palette = pal;
-
             mapGfx.Palette = pal;
-
         }
 
-        byte[] staticgfx;
-        public void buildtileset(IntPtr allgfx8array, Bitmap[] allBitmaps)
+        private void Buildtileset(IntPtr allgfx8array, Bitmap[] allBitmaps)
         {
-
-            staticgfx = new byte[] { 58, 59, 60, 61, 0, 0, 89, 91, 0, 0, 0, 0, 0, 0, 0, 0 };
-            staticgfx[8] = 115 + 0; staticgfx[9] = 115 + 10; staticgfx[10] = 115 + 6; staticgfx[11] = 115 + 7;
-
+            byte[] staticgfx = new byte[] { 58, 59, 60, 61, 0, 0, 89, 91, 0, 0, 0, 0, 0, 0, 0, 0 };
+            staticgfx[8] = 115 + 0;
+            staticgfx[9] = 115 + 10;
+            staticgfx[10] = 115 + 6;
+            staticgfx[11] = 115 + 7;
 
             int index = 0x21;
             if (mapdata.index < 0x40)
@@ -372,12 +314,10 @@ namespace WinFormMono
                 staticgfx[i] = mapinfos.blocksetGroups2[(index * 8) + i];
             }
 
-
             for (int i = 0; i < 4; i++)
             {
                 staticgfx[12 + i] = (byte)(mapinfos.spritesetGroups[+((mapdata.spriteset) * 4) + i] + 115);
             }
-
 
             if (mapinfos.blocksetGroups[(mapdata.blockset * 4)] != 0)
             {
@@ -408,7 +348,6 @@ namespace WinFormMono
             {
                 staticgfx[7] = 91;
             }
-            
 
             if (mapdata.index >= 128 & mapdata.index < 148)
             {
@@ -416,60 +355,34 @@ namespace WinFormMono
                 staticgfx[5] = 72;
             }
 
-
-            for (int i = 0; i < 16; i++)
+            unsafe
             {
-
-                BitmapData currentbmpData = allBitmaps[staticgfx[i]].LockBits(new Rectangle(0, 0, 128, 32), ImageLockMode.ReadOnly, PixelFormat.Format4bppIndexed);
-                unsafe
+                byte* allgfx8Data = (byte*)allgfx8array.ToPointer();
+                for (int i = 0; i < 16; i++)
                 {
-                    byte* bytePointer = (byte*)currentbmpData.Scan0.ToPointer();
-
-                    (allBitmaps[staticgfx[i]] as Bitmap).UnlockBits(currentbmpData);
-                    byte* bytePointerNew = (byte*)allgfx8array.ToPointer();
+                    Bitmap mapBitmap = allBitmaps[staticgfx[i]];
+                    BitmapData mapBitmapData = mapBitmap.LockBits(new Rectangle(0, 0, 128, 32), ImageLockMode.ReadOnly, PixelFormat.Format4bppIndexed);
+                    byte* mapData = (byte*)mapBitmapData.Scan0.ToPointer();
 
                     for (int j = 0; j < 2048; j++)
                     {
+                        byte mapByte = mapData[j];
+
                         switch (i)
                         {
                             case 0:
-                                bytePointerNew[(i * 2048) + j] = (byte)(bytePointer[j] + 0x88);
-                                break;
-                            case 1:
-                                bytePointerNew[(i * 2048) + j] = bytePointer[j];
-                                break;
-                            case 2:
-                                bytePointerNew[(i * 2048) + j] = bytePointer[j];
-                                break;
                             case 3:
-                                bytePointerNew[(i * 2048) + j] = (byte)(bytePointer[j] + 0x88);
-                                break;
                             case 4:
-                                bytePointerNew[(i * 2048) + j] = (byte)(bytePointer[j] + 0x88);
-                                break;
                             case 5:
-                                bytePointerNew[(i * 2048) + j] = (byte)(bytePointer[j] + 0x88);
+                                mapByte += 0x88;
                                 break;
-                            case 6:
-                                bytePointerNew[(i * 2048) + j] = bytePointer[j];
-                                break;
-                            case 7:
-                                bytePointerNew[(i * 2048) + j] = bytePointer[j];
-
-                                break;
-                            default:
-                                bytePointerNew[(i * 2048) + j] = bytePointer[j];
-                                break;
-
                         }
 
+                        allgfx8Data[(i * 2048) + j] = mapByte;
                     }
+                    mapBitmap.UnlockBits(mapBitmapData);
                 }
             }
-
         }
-
-
     }
-
 }

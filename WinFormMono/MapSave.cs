@@ -19,9 +19,9 @@ namespace WinFormMono
         public short msgid;
         public Room_Sprite[] sprites;
         public RoomPotSave[] items;
+
         public MapSave()
         {
-
 
         }
     }

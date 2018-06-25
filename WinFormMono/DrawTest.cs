@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -37,15 +31,18 @@ namespace WinFormMono
                 tilesetBitmaps[i] = new Bitmap(projectLoaded + "//Graphics//Tilesets 3bpp//blockset" + i.ToString("D3") + ".png");
             }
 
-
             for (int i = 0; i < 128; i++)
             {
+                // Unload
+                if (allmaps[i] != null)
+                {
+                    allmaps[i].Dispose();
+                    allmaps[i] = null;
+                }
+
                 MapSave map = JsonConvert.DeserializeObject<MapSave>(File.ReadAllText(projectLoaded + "//Overworld//Maps//Map" + i.ToString("D3") + ".json"));
                 allmaps[i] = new Map16(allgfx8array, allPalettes, mapInfos, map, tilesetBitmaps);
-                
             }
-
-
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -70,7 +67,7 @@ namespace WinFormMono
                 for (int i = 0; i < 64; i++)
                 {
                     pe.Graphics.DrawImage(allmaps[i + ind].mapGfx, new Point(xx * 512, yy * 512));
-                    
+
                     xx++;
                     if (xx >= 8)
                     {
@@ -83,8 +80,6 @@ namespace WinFormMono
             }
 
         }
-
-
 
         public void DrawPalettes(Graphics g)
         {
@@ -99,7 +94,6 @@ namespace WinFormMono
                 {
                     y++;
                     x = 0;
-                    
                 }
                 p++;
             }

@@ -7,22 +7,19 @@ namespace WinFormMono
 {
     class Map16 : IDisposable
     {
-        public ColorPalette pal;
         public Bitmap mapGfx;
 
         IntPtr mapGfxPtr = Marshal.AllocHGlobal(512 * 512);
         MapSave mapdata;
         Color[] currentPalette = new Color[256];
         MapInfos mapinfos;
-
         public Map16(IntPtr allgfx8Ptr, PaletteHandler allpalettes, MapInfos mapinfos, MapSave mapdata, Bitmap[] allBitmaps)
         {
             this.mapdata = mapdata;
             this.mapinfos = mapinfos;
 
             IntPtr allgfx16Ptr = Marshal.AllocHGlobal(128 * 7520);
-            Bitmap allgfx16Bitmap = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16Ptr);
-
+            //Bitmap allgfx16Bitmap = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16Ptr);
             mapGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, mapGfxPtr);
 
             LoadPalette(allpalettes);
@@ -33,12 +30,64 @@ namespace WinFormMono
             Marshal.FreeHGlobal(allgfx16Ptr);
         }
 
+        public unsafe void setTiles(IntPtr allgfx16Ptr, int x, int y, ushort[,] tile)
+        {
+            byte* gfxData = (byte*)mapGfxPtr.ToPointer();
+            byte* gfx16Data = (byte*)allgfx16Ptr.ToPointer();
+            for (int xx = 0; xx < tile.GetLength(0); xx++)
+            {
+                for (int yy = 0; yy < tile.GetLength(1); yy++)
+                {
+
+                    
+                    int mapPos = GetTilePos(x+xx, y+yy);
+                    if (mapPos != -1)
+                    {
+                        mapdata.tiles[x + xx, y + yy] = tile[xx, yy];
+                        for (int i = 0; i < 16; i++)
+                        {
+                            for (int j = 0; j < 16; j++)
+                            {
+                                gfxData[((x + xx) * 16) + ((y + yy) * 8192) + j + (i * 512)] = gfx16Data[mapPos + j + (i * 128)];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public ushort[,] getTiles(int x, int y, int w, int h)
+        {
+            ushort[,] tiles = new ushort[w, h];
+            for(int xx = 0; xx < w; xx++)
+            {
+                for (int yy = 0; yy < h; yy++)
+                {
+                    tiles[xx, yy] = mapdata.tiles[xx+x,yy+y];
+                }
+            }
+            
+
+            return tiles;
+        }
+
+        public unsafe void UpdateGfx(IntPtr allgfx8Ptr, IntPtr allgfx16Ptr,Bitmap[] allBitmaps)
+        {
+            Buildtileset(allgfx8Ptr, allBitmaps);
+            BuildTiles16Gfx(allgfx8Ptr, allgfx16Ptr);
+        }
+
+        public unsafe void UpdateMap(IntPtr allgfx16Ptr)
+        {
+            BuildMap(allgfx16Ptr);
+        }
+
         public void Dispose()
         {
             Marshal.FreeHGlobal(mapGfxPtr);
         }
 
-        private unsafe void BuildMap(IntPtr allgfx16Ptr)
+        public unsafe void BuildMap(IntPtr allgfx16Ptr)
         {
             byte* gfxData = (byte*)mapGfxPtr.ToPointer();
             byte* gfx16Data = (byte*)allgfx16Ptr.ToPointer();
@@ -48,11 +97,14 @@ namespace WinFormMono
                 for (int x = 0; x < 32; x++)
                 {
                     int mapPos = GetTilePos(x, y);
-                    for (int i = 0; i < 16; i++)
+                    if (mapPos != -1)
                     {
-                        for (int j = 0; j < 16; j++)
+                        for (int i = 0; i < 16; i++)
                         {
-                            gfxData[(x * 16) + (y * 8192) + j + (i * 512)] = gfx16Data[mapPos + j + (i * 128)];
+                            for (int j = 0; j < 16; j++)
+                            {
+                                gfxData[(x * 16) + (y * 8192) + j + (i * 512)] = gfx16Data[mapPos + j + (i * 128)];
+                            }
                         }
                     }
                 }
@@ -61,8 +113,21 @@ namespace WinFormMono
 
         public int GetTilePos(int x, int y)
         {
+            if (x > 31)
+            {
+                return -1;
+            }
+            if (y > 31)
+            {
+                return -1;
+            }
             ushort tile = mapdata.tiles[x, y];
             return ((tile / 8) * 2048) + ((tile - ((tile / 8) * 8)) * 16);
+        }
+
+        public ColorPalette GetPalette()
+        {
+            return mapGfx.Palette;
         }
 
         private unsafe void BuildTiles16Gfx(IntPtr allgfx8Ptr, IntPtr allgfx16Ptr)
@@ -279,7 +344,7 @@ namespace WinFormMono
                 currentPalette[(i * 16) + 8] = bgrcolor;
             }
 
-            pal = mapGfx.Palette;
+            ColorPalette pal = mapGfx.Palette;
             for (int i = 0; i < 256; i++)
             {
                 pal.Entries[i] = currentPalette[i];

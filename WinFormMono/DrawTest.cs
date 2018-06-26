@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using Newtonsoft.Json;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace WinFormMono
 {
@@ -17,7 +19,74 @@ namespace WinFormMono
         PaletteHandler allPalettes;
         Map16[] allmaps = new Map16[128];
         MapInfos mapInfos;
+        Scene scene;
+        int worldOffset = 0;
         public bool lightworld = true;
+        public DrawTest()
+        {
+            MouseMove += DrawTest_MouseMove;
+            MouseDown += DrawTest_MouseDown;
+            MouseUp += DrawTest_MouseUp;
+        }
+
+        private void DrawTest_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (scene != null)
+            {
+                scene.mouseUp(e, allmaps[scene.mouseOverMap + worldOffset]);
+                
+                int yT = (scene.mouseOverMap / 8);
+                int xT = scene.mouseOverMap - (yT * 8);
+                Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+            }
+        }
+
+        private void DrawTest_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (scene != null)
+            {
+                scene.mouseDown(e, allmaps[scene.mouseOverMap + worldOffset], allgfx8array);
+                
+                int yT = (scene.mouseOverMap / 8);
+                int xT = scene.mouseOverMap - (yT * 8);
+                Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+            }
+        }
+
+        private void DrawTest_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (scene != null)
+            {
+                scene.mouseMove(e, allmaps[scene.mouseOverMap], allgfx8array);
+                if (scene.refresh)
+                {
+                    
+                    // Stopwatch sw = new Stopwatch();
+                    //sw.Start();
+                    //Refresh();
+                    int yT = (scene.mouseOverMap / 8);
+                    int xT = scene.mouseOverMap - (yT * 8);
+                    Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+                    if (scene.screenChanged != -1)
+                    {
+                        scene.UpdateGfx(allgfx8array, allmaps[scene.mouseOverMap + worldOffset]);
+                        scene.setOverlaytiles(scene.allgfx16Ptr);
+                        yT = (scene.screenChanged / 8);
+                        xT = scene.screenChanged - (yT * 8);
+                        //invalidate last screen as well to prevent artifact
+                        Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+                        
+                        scene.screenChanged = -1;
+                    }
+
+                    scene.refresh = false;
+
+                    //sw.Stop();
+                    //Console.WriteLine(sw.ElapsedMilliseconds);
+                }
+            }
+
+        }
 
         public void CreateProject(string projectLoaded)
         {
@@ -30,7 +99,7 @@ namespace WinFormMono
             {
                 tilesetBitmaps[i] = new Bitmap(projectLoaded + "//Graphics//Tilesets 3bpp//blockset" + i.ToString("D3") + ".png");
             }
-
+            scene = new Scene(tilesetBitmaps);
             for (int i = 0; i < 128; i++)
             {
                 // Unload
@@ -43,6 +112,7 @@ namespace WinFormMono
                 MapSave map = JsonConvert.DeserializeObject<MapSave>(File.ReadAllText(projectLoaded + "//Overworld//Maps//Map" + i.ToString("D3") + ".json"));
                 allmaps[i] = new Map16(allgfx8array, allPalettes, mapInfos, map, tilesetBitmaps);
             }
+
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -50,40 +120,50 @@ namespace WinFormMono
             base.OnPaint(pe);
             if (projectLoaded != "")
             {
-                int ind = 0;
-                if (lightworld)
-                {
-                    ind = 0;
-                }
-                else
-                {
-                    ind = 64;
-                }
-                pe.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                pe.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
-                pe.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                int xx = 0;
-                int yy = 0;
-                for (int i = 0; i < 64; i++)
-                {
-                    pe.Graphics.DrawImage(allmaps[i + ind].mapGfx, new Point(xx * 512, yy * 512));
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                DrawMaps(pe.Graphics);
 
-                    xx++;
-                    if (xx >= 8)
-                    {
-                        yy++;
-                        xx = 0;
-                    }
-                }
+                scene.Draw(pe.Graphics);
+                sw.Stop();
+                Console.WriteLine(sw.ElapsedMilliseconds);
+            }
+
+        }
 
 
+
+        public void DrawMaps(Graphics g)
+        {
+            if (lightworld)
+            {
+                worldOffset = 0;
+            }
+            else
+            {
+                worldOffset = 64;
+            }
+            g.CompositingMode = CompositingMode.SourceCopy;
+            g.CompositingQuality = CompositingQuality.HighSpeed;
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            int xx = 0;
+            int yy = 0;
+            for (int i = 0; i < 64; i++)
+            {
+                g.DrawImage(allmaps[i + worldOffset].mapGfx, new Point(xx * 512, yy * 512));
+                xx++;
+                if (xx >= 8)
+                {
+                    yy++;
+                    xx = 0;
+                }
             }
 
         }
 
         public void DrawPalettes(Graphics g)
         {
-            int x = 0;
+            /*int x = 0;
             int y = 0;
             int p = 0;
             for (int i = 0; i < 256; i++)
@@ -96,7 +176,7 @@ namespace WinFormMono
                     x = 0;
                 }
                 p++;
-            }
+            }*/
         }
 
     }

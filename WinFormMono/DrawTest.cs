@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.Collections.Generic;
 
 namespace WinFormMono
 {
@@ -19,6 +20,8 @@ namespace WinFormMono
         PaletteHandler allPalettes;
         Map16[] allmaps = new Map16[128];
         MapInfos mapInfos;
+        MapSave[] mapdata = new MapSave[128];
+        byte[] mapParent = new byte[128];
         Scene scene;
         int worldOffset = 0;
         public bool lightworld = true;
@@ -57,19 +60,37 @@ namespace WinFormMono
         {
             if (scene != null)
             {
-                scene.mouseMove(e, allmaps[scene.mouseOverMap], allgfx8array);
+                scene.mouseMove(e, allmaps[(scene.mouseOverMap + worldOffset)], allgfx8array);
                 if (scene.refresh)
                 {
                     
                     // Stopwatch sw = new Stopwatch();
                     //sw.Start();
                     //Refresh();
-                    int yT = (scene.mouseOverMap / 8);
-                    int xT = scene.mouseOverMap - (yT * 8);
-                    Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+                    int yT = ((scene.mouseOverMap) / 8);
+                    int xT = (scene.mouseOverMap) - (yT * 8);
+                    
+                    if (allmaps[(scene.mouseOverMap + worldOffset)].largeMap)
+                    {
+                        yT = (allmaps[(scene.mouseOverMap + worldOffset)].parentMapId / 8);
+                        xT = allmaps[(scene.mouseOverMap + worldOffset)].parentMapId - (yT * 8);
+                        Invalidate(new Rectangle(xT * 512, yT * 512, 1024, 1024));
+                    }
+                    else
+                    {
+                        Invalidate(new Rectangle(xT * 512, yT * 512, 512, 512));
+                    }
                     if (scene.screenChanged != -1)
                     {
-                        scene.UpdateGfx(allgfx8array, allmaps[scene.mouseOverMap + worldOffset]);
+                        if (allmaps[(scene.mouseOverMap + worldOffset)].largeMap)
+                        {
+                            
+                            scene.UpdateGfx(allgfx8array, allmaps[(scene.mouseOverMap + worldOffset)]);
+                        }
+                        else
+                        {
+                            scene.UpdateGfx(allgfx8array, allmaps[(scene.mouseOverMap + worldOffset)]);
+                        }
                         scene.setOverlaytiles(scene.allgfx16Ptr);
                         yT = (scene.screenChanged / 8);
                         xT = scene.screenChanged - (yT * 8);
@@ -88,6 +109,18 @@ namespace WinFormMono
 
         }
 
+        public void SaveEntrances()
+        {
+            for (int i = 0; i < 128; i++)
+            {
+                mapInfos.entranceOWs[i].mapId = mapInfos.entranceOWsEditor[i].mapId;
+                mapInfos.entranceOWs[i].mapPos = mapInfos.entranceOWsEditor[i].mapPos;
+                mapInfos.entranceOWs[i].entranceId = mapInfos.entranceOWsEditor[i].entranceId;
+                File.WriteAllText(projectLoaded + "//Overworld//Entrances//Entrance" + i.ToString("D3") + ".json", JsonConvert.SerializeObject(mapInfos.entranceOWs[i]));
+            }
+        }
+
+
         public void CreateProject(string projectLoaded)
         {
             this.Image = new Bitmap(4096, 4096);
@@ -95,24 +128,125 @@ namespace WinFormMono
             allgfx8 = new Bitmap(128, 512, 64, PixelFormat.Format4bppIndexed, allgfx8array); //temporary variable used for all rooms
             allPalettes = new PaletteHandler(projectLoaded);
             mapInfos = new MapInfos(projectLoaded);
-            for (int i = 0; i < 222; i++)
+            for (int i = 0; i < 223; i++)
             {
-                tilesetBitmaps[i] = new Bitmap(projectLoaded + "//Graphics//Tilesets 3bpp//blockset" + i.ToString("D3") + ".png");
+                tilesetBitmaps[i] = new Bitmap(projectLoaded + "//Graphics//" + i.ToString("D3") + ".png");
             }
-            scene = new Scene(tilesetBitmaps);
+           
             for (int i = 0; i < 128; i++)
             {
-                // Unload
+                mapdata[i] = JsonConvert.DeserializeObject<MapSave>(File.ReadAllText(projectLoaded + "//Overworld//Maps//Map" + i.ToString("D3") + ".json"));
+            }
+            getLargeMaps();
+            for (int i = 0; i < 128; i++)
+            {
                 if (allmaps[i] != null)
                 {
                     allmaps[i].Dispose();
                     allmaps[i] = null;
                 }
+                if (mapdata[i].largeMap)
+                {
+                    mapdata[i].palette = mapdata[mapParent[i]].palette;
+                    mapdata[i].blockset = mapdata[mapParent[i]].blockset;
+                }
+                allmaps[i] = new Map16(allgfx8array, allPalettes, mapInfos, mapdata[i], tilesetBitmaps);
+            }
+                setLargeMaps();
+            scene = new Scene(tilesetBitmaps, allmaps[0], allgfx8array,mapInfos);
 
-                MapSave map = JsonConvert.DeserializeObject<MapSave>(File.ReadAllText(projectLoaded + "//Overworld//Maps//Map" + i.ToString("D3") + ".json"));
-                allmaps[i] = new Map16(allgfx8array, allPalettes, mapInfos, map, tilesetBitmaps);
+        }
+
+        public void getLargeMaps()
+        {
+            bool[] mapChecked = new bool[64];
+            for(int i = 0;i<64;i++)
+            {
+                mapChecked[i] = false;
+            }
+            int xx = 0;
+            int yy = 0;
+            while (true)
+            {
+
+                int i = xx + (yy * 8);
+                if (mapChecked[i] == false)
+                {
+                    if (mapdata[i].largeMap == true)
+                    {
+                        mapChecked[i] = true;
+                        mapParent[i] = (byte)i;
+                        mapParent[i+64] = (byte)(i+64);
+
+                        mapChecked[i + 1] = true;
+                        mapParent[i + 1] = (byte)i;
+                        mapParent[i+65] = (byte)(i+64);
+
+                        mapChecked[i + 8] = true;
+                        mapParent[i + 8] = (byte)i;
+                        mapParent[i+72] = (byte)(i+64);
+
+                        mapChecked[i + 9] = true;
+                        mapParent[i + 9] = (byte)i;
+                        mapParent[i+73] = (byte)(i+64);
+                        xx++;
+                    }
+                }
+
+
+                xx++;
+                if (xx >= 8)
+                {
+                    xx = 0;
+                    yy += 1;
+                    if (yy >= 8)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void setLargeMaps()
+        {
+            //List<byte> largemaps = new List<byte>();
+            int xx = 0;
+            int yy = 0;
+            while(true)
+            {
+
+                int i = xx + (yy * 8);
+                if (allmaps[i].parentMapId == 255)
+                {
+                    if (allmaps[i].largeMap == true)
+                    {
+                        allmaps[i].parentMapId = (byte)i;
+                        allmaps[i].parentMap = allmaps[i];
+                        allmaps[i + 1].parentMapId = (byte)i;
+                        allmaps[i + 1].parentMap = allmaps[i];
+                        allmaps[i + 8].parentMapId = (byte)i;
+                        allmaps[i + 8].parentMap = allmaps[i];
+                        allmaps[i + 9].parentMapId = (byte)i;
+                        allmaps[i + 9].parentMap = allmaps[i];
+                        Console.WriteLine(i);
+                        xx++;
+                    }
+                }
+
+
+                xx++;
+                if (xx>=8)
+                {
+                    xx = 0;
+                    yy+=1;
+                    if (yy >=8)
+                    {
+                        break;
+                    }
+                }
             }
 
+            //return largemaps.ToArray();
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -120,17 +254,44 @@ namespace WinFormMono
             base.OnPaint(pe);
             if (projectLoaded != "")
             {
+                //Stopwatch sw = new Stopwatch();
+                //sw.Start();
+                DrawMaps(pe.Graphics);
+                scene.Draw(pe.Graphics);
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                DrawMaps(pe.Graphics);
 
-                scene.Draw(pe.Graphics);
+                scene.DrawObjects(pe.Graphics);
+                scene.drawSprites(pe.Graphics, allmaps);
                 sw.Stop();
                 Console.WriteLine(sw.ElapsedMilliseconds);
+                //sw.Stop();
+                //Console.WriteLine(sw.ElapsedMilliseconds);
             }
 
         }
 
+        public void setMode(bool entrances,bool exits,bool sprites,bool snap,bool tiles)
+        {
+            if (entrances)
+            {
+                scene.sceneMode = SceneMode.entrances;
+            }
+            else if (exits)
+            {
+                scene.sceneMode = SceneMode.exits;
+            }
+            else if (sprites)
+            {
+                scene.sceneMode = SceneMode.sprites;
+            }
+            else if (tiles)
+            {
+                scene.sceneMode = SceneMode.tiles;
+            }
+
+            scene.snapToGrid = snap;
+        }
 
 
         public void DrawMaps(Graphics g)
@@ -143,6 +304,7 @@ namespace WinFormMono
             {
                 worldOffset = 64;
             }
+            scene.updateDisplayedMaps(worldOffset);
             g.CompositingMode = CompositingMode.SourceCopy;
             g.CompositingQuality = CompositingQuality.HighSpeed;
             g.InterpolationMode = InterpolationMode.NearestNeighbor;

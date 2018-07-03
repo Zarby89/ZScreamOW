@@ -13,11 +13,15 @@ namespace WinFormMono
         MapSave mapdata;
         Color[] currentPalette = new Color[256];
         MapInfos mapinfos;
+        public bool largeMap = false;
+        public Map16 parentMap; //for large map
+        public byte parentMapId = 255;
+        
         public Map16(IntPtr allgfx8Ptr, PaletteHandler allpalettes, MapInfos mapinfos, MapSave mapdata, Bitmap[] allBitmaps)
         {
             this.mapdata = mapdata;
             this.mapinfos = mapinfos;
-
+            this.largeMap = mapdata.largeMap;
             IntPtr allgfx16Ptr = Marshal.AllocHGlobal(128 * 7520);
             //Bitmap allgfx16Bitmap = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16Ptr);
             mapGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, mapGfxPtr);
@@ -128,6 +132,11 @@ namespace WinFormMono
         public ColorPalette GetPalette()
         {
             return mapGfx.Palette;
+        }
+
+        public Room_Sprite[] GetSprites()
+        {
+            return mapdata.sprites;
         }
 
         private unsafe void BuildTiles16Gfx(IntPtr allgfx8Ptr, IntPtr allgfx16Ptr)

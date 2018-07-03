@@ -20,6 +20,7 @@ namespace WinFormMono
         public ExitOW[] exitsOWs = new ExitOW[78];
         public string[] gameTexts;
         public Tile16[] alltiles16;
+        public EntranceOWEditor[] entranceOWsEditor = new EntranceOWEditor[128];
         
         public MapInfos(string projectLoaded)
         {
@@ -31,6 +32,17 @@ namespace WinFormMono
             for (int i = 0; i < 128; i++)
             {
                 entranceOWs[i] = JsonConvert.DeserializeObject<EntranceOW>(File.ReadAllText(projectLoaded + "//Overworld//Entrances//Entrance" + i.ToString("D3") + ".json"));
+
+                byte m = entranceOWs[i].entranceId;
+                short s = entranceOWs[i].mapId;
+                int p = entranceOWs[i].mapPos >> 1;
+                int x = (p % 64);
+                int y = (p >> 6);
+
+
+               
+                entranceOWsEditor[i] = new EntranceOWEditor((x * 16) + ((s - ((s / 8) * 8)) * 512), (y * 16) + ((s / 8) * 512),m,s, entranceOWs[i].mapPos);
+
             }
 
             for (int i = 0; i < 19; i++)

@@ -34,4 +34,10 @@ public struct Entrance //can be used for starting entrance as well
     public short exit;//2byte word 
     public byte music; //1byte //Will need to be renamed and changed to add support to MSU1
 
+    //Scrolling Quadrant notes :
+    //$A9[0x01] - 0 if you are on the left half of the room. 1 if you are on the right half.
+    //$AA[0x01] - 2 if you are the lower half of the room. 0 if you are on the upper half.
+    //LDA $D69F, X : LSR #4     : STA $A9
+    //LDA $D69F, X : AND.b #$0F : STA $AA
+
 }

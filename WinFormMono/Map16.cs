@@ -5,28 +5,28 @@ using System.Runtime.InteropServices;
 
 namespace WinFormMono
 {
-    class Map16 : IDisposable
+    public class Map16 : IDisposable
     {
         public Bitmap mapGfx;
 
         IntPtr mapGfxPtr = Marshal.AllocHGlobal(512 * 512);
         MapSave mapdata;
         Color[] currentPalette = new Color[256];
-        MapInfos mapinfos;
+        JsonData jsonData;
         public bool largeMap = false;
         public Map16 parentMap; //for large map
         public byte parentMapId = 255;
-        
-        public Map16(IntPtr allgfx8Ptr, PaletteHandler allpalettes, MapInfos mapinfos, MapSave mapdata, Bitmap[] allBitmaps)
+        public byte[] staticgfx = new byte[] { 58, 59, 60, 61, 0, 0, 89, 91, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public Map16(IntPtr allgfx8Ptr, JsonData jsonData, MapSave mapdata, Bitmap[] allBitmaps)
         {
             this.mapdata = mapdata;
-            this.mapinfos = mapinfos;
+            this.jsonData = jsonData;
             this.largeMap = mapdata.largeMap;
             IntPtr allgfx16Ptr = Marshal.AllocHGlobal(128 * 7520);
             //Bitmap allgfx16Bitmap = new Bitmap(128, 7520, 128, PixelFormat.Format8bppIndexed, allgfx16Ptr);
             mapGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, mapGfxPtr);
 
-            LoadPalette(allpalettes);
+            LoadPalette(jsonData.allPalettes);
             Buildtileset(allgfx8Ptr, allBitmaps);
             BuildTiles16Gfx(allgfx8Ptr, allgfx16Ptr);
             BuildMap(allgfx16Ptr);
@@ -42,8 +42,6 @@ namespace WinFormMono
             {
                 for (int yy = 0; yy < tile.GetLength(1); yy++)
                 {
-
-                    
                     int mapPos = GetTilePos(x+xx, y+yy);
                     if (mapPos != -1)
                     {
@@ -70,7 +68,6 @@ namespace WinFormMono
                     tiles[xx, yy] = mapdata.tiles[xx+x,yy+y];
                 }
             }
-            
 
             return tiles;
         }
@@ -151,7 +148,7 @@ namespace WinFormMono
             {
                 //8x8 tile draw
                 //gfx8 = 4bpp so everyting is /2
-                var tiles = mapinfos.alltiles16[i];
+                var tiles = jsonData.alltiles16[i];
 
                 for (var tile = 0; tile < 4; tile++)
                 {
@@ -353,6 +350,41 @@ namespace WinFormMono
                 currentPalette[(i * 16) + 8] = bgrcolor;
             }
 
+            
+            //Sprite Palettes
+            k = (1 * 7);
+            for (int y = 8; y < 9; y++)
+            {
+                for (int x = 1; x < 8; x++)
+                {
+                    currentPalette[x + (16 * y)] = jsonData.allPalettes.aux2spritePalettes[k];
+                    k++;
+                }
+            }
+
+            //Sprite Palettes
+            k = (7*7);
+            for (int y = 8; y < 9; y++)
+            {
+                for (int x = 9; x < 16; x++)
+                {
+                    currentPalette[x + (16 * y)] = jsonData.allPalettes.aux3spritePalettes[k];
+                    k++;
+                }
+            }
+
+
+            //Sprite Palettes
+            k = 0;
+            for (int y = 9; y < 13; y++)
+            {
+                for (int x = 1; x < 16; x++)
+                {
+                    currentPalette[x + (16 * y)] = jsonData.allPalettes.spritePalettes[0][k];
+                    k++;
+                }
+            }
+
             ColorPalette pal = mapGfx.Palette;
             for (int i = 0; i < 256; i++)
             {
@@ -360,10 +392,9 @@ namespace WinFormMono
             }
             mapGfx.Palette = pal;
         }
-
+        
         private void Buildtileset(IntPtr allgfx8array, Bitmap[] allBitmaps)
         {
-            byte[] staticgfx = new byte[] { 58, 59, 60, 61, 0, 0, 89, 91, 0, 0, 0, 0, 0, 0, 0, 0 };
             staticgfx[8] = 115 + 0;
             staticgfx[9] = 115 + 10;
             staticgfx[10] = 115 + 6;
@@ -385,29 +416,29 @@ namespace WinFormMono
 
             for (int i = 0; i < 8; i++)
             {
-                staticgfx[i] = mapinfos.blocksetGroups2[(index * 8) + i];
+                staticgfx[i] = jsonData.blocksetGroups2[(index * 8) + i];
             }
 
             for (int i = 0; i < 4; i++)
             {
-                staticgfx[12 + i] = (byte)(mapinfos.spritesetGroups[+((mapdata.spriteset) * 4) + i] + 115);
+                staticgfx[12 + i] = (byte)(jsonData.spritesetGroups[+((mapdata.spriteset) * 4) + i] + 115);
             }
 
-            if (mapinfos.blocksetGroups[(mapdata.blockset * 4)] != 0)
+            if (jsonData.blocksetGroups[(mapdata.blockset * 4)] != 0)
             {
-                staticgfx[3] = mapinfos.blocksetGroups[(mapdata.blockset * 4)];
+                staticgfx[3] = jsonData.blocksetGroups[(mapdata.blockset * 4)];
             }
-            if (mapinfos.blocksetGroups[(mapdata.blockset * 4) + 1] != 0)
+            if (jsonData.blocksetGroups[(mapdata.blockset * 4) + 1] != 0)
             {
-                staticgfx[4] = mapinfos.blocksetGroups[(mapdata.blockset * 4) + 1];
+                staticgfx[4] = jsonData.blocksetGroups[(mapdata.blockset * 4) + 1];
             }
-            if (mapinfos.blocksetGroups[(mapdata.blockset * 4) + 2] != 0)
+            if (jsonData.blocksetGroups[(mapdata.blockset * 4) + 2] != 0)
             {
-                staticgfx[5] = mapinfos.blocksetGroups[(mapdata.blockset * 4) + 2];
+                staticgfx[5] = jsonData.blocksetGroups[(mapdata.blockset * 4) + 2];
             }
-            if (mapinfos.blocksetGroups[(mapdata.blockset * 4) + 3] != 0)
+            if (jsonData.blocksetGroups[(mapdata.blockset * 4) + 3] != 0)
             {
-                staticgfx[6] = mapinfos.blocksetGroups[(mapdata.blockset * 4) + 3];
+                staticgfx[6] = jsonData.blocksetGroups[(mapdata.blockset * 4) + 3];
             }
 
             if ((mapdata.index >= 0x03 && mapdata.index <= 0x07) || (mapdata.index >= 0x0B && mapdata.index <= 0x0E))

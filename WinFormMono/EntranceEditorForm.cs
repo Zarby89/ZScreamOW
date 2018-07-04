@@ -22,5 +22,10 @@ namespace WinFormMono
             choice = listBox1.SelectedIndex;
             this.Close();
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

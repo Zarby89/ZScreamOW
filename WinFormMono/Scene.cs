@@ -34,22 +34,21 @@ namespace WinFormMono
         Bitmap fontBitmap;
         ushort[,] selectedTiles;
         bool allowCopy = false;
-        MapInfos mapInfos;
+        JsonData jsonData;
         Rectangle selectionSize = new Rectangle(0, 0, 16, 16);
         int offset = 0;
-        bool displayEntrance = false;
         Map16 selectedMap;
         public bool snapToGrid = false;
         public SceneMode sceneMode = SceneMode.tiles; 
 
-        public Scene(Bitmap[] allbitmaps, Map16 map, IntPtr allgfx8array, MapInfos mapInfos)
+        public Scene(Bitmap[] allbitmaps, Map16 map, IntPtr allgfx8array, JsonData jsonData)
         {
             this.allbitmaps = allbitmaps;
             selectedTilesGfx = new Bitmap(512, 512, 512, PixelFormat.Format8bppIndexed, selectedTilesGfxPtr);
             selectedTiles = new ushort[1, 1];
             selectedTiles[0, 0] = 0;
             UpdateGfx(allgfx8array, map);
-            this.mapInfos = mapInfos;
+            this.jsonData = jsonData;
             fontBitmap = new Bitmap("font.png");
         }
 
@@ -188,7 +187,7 @@ namespace WinFormMono
             {
                 for (int i = 0; i < 128; i++)
                 {
-                    EntranceOWEditor en = mapInfos.entranceOWsEditor[i];
+                    EntranceOWEditor en = jsonData.entranceOWsEditor[i];
                     if (mouse_x >= en.x && mouse_x < en.x + 16 && mouse_y >= en.y && mouse_y < en.y + 16)
                     {
                         if (mouse_down == false)
@@ -209,10 +208,11 @@ namespace WinFormMono
                 int xT = mouseOverMap - (yT * 8);
                 int mx = (mouse_tile_x / 32);
                 int my = (mouse_tile_y / 32);
+                mouse_tile_x_down = mouse_tile_x - (mx * 32);
+                mouse_tile_y_down = mouse_tile_y - (my * 32);
                 if (e.Button == MouseButtons.Right)
                 {
-                    mouse_tile_x_down = mouse_tile_x - (mx * 32);
-                    mouse_tile_y_down = mouse_tile_y - (my * 32);
+
                     allowCopy = true;
                     selectionSize = new Rectangle(mouse_tile_x_down * 16, mouse_tile_y_down * 16, 16, 16);
                 }
@@ -220,6 +220,7 @@ namespace WinFormMono
                 {
                     map.setTiles(allgfx16Ptr, mouse_tile_x - (mx * 32), mouse_tile_y - (my * 32), selectedTiles);
                 }
+
                 map.UpdateMap(allgfx16Ptr);
                 //setOverlaytiles(allgfx16Ptr);
                 //map.setTile(allgfx16Ptr,mouse_tile_x, mouse_tile_y, 500);
@@ -279,6 +280,19 @@ namespace WinFormMono
                         setOverlaytiles(allgfx16Ptr);
                     }
                 }
+                else if (e.Button == MouseButtons.Middle)
+                {
+                    selectionSize = new Rectangle(mouse_tile_x_down * 16, mouse_tile_y_down * 16, (1 * 16), (1 * 16));
+                    selectedTiles = map.getTiles(mouse_tile_x_down, mouse_tile_y_down, 1, 1);
+                    Tile16EditorForm tile16Editor = new Tile16EditorForm();
+                    tile16Editor.setGfxData(allbitmaps, jsonData,map, selectedTiles[0,0]);
+                    if (tile16Editor.ShowDialog() == DialogResult.OK)
+                    {
+                        jsonData.alltiles16[selectedTiles[0, 0]] = tile16Editor.editingTile;
+                        map.UpdateMap(allgfx16Ptr);
+                        refresh = true;
+                    }
+                }
             }
             else if (sceneMode == SceneMode.entrances)
             {
@@ -306,11 +320,11 @@ namespace WinFormMono
                         {
                             ecrf.listBox1.Items.Add(i.ToString("X2") + " - " + roomsNames[i]);
                         }
-                        ecrf.listBox1.SelectedIndex = mapInfos.entrances[selectedEntrance.entranceId].room;
+                        ecrf.listBox1.SelectedIndex = jsonData.entrances[selectedEntrance.entranceId].room;
                         
                         if (ecrf.ShowDialog() == DialogResult.OK)
                         {
-                            mapInfos.entrances[selectedEntrance.entranceId].room = (short)ecrf.choice;
+                            jsonData.entrances[selectedEntrance.entranceId].room = (short)ecrf.choice;
                         }
 
                         selectedEntrance = null;
@@ -426,7 +440,7 @@ namespace WinFormMono
 
             for (int i = 0; i < 78; i++)
             {
-                ExitOW e = mapInfos.exitsOWs[i];
+                ExitOW e = jsonData.exitsOWs[i];
 
                 if (e.mapId < offset + 64)
                 {
@@ -450,7 +464,7 @@ namespace WinFormMono
             for (int i = 0; i < 128; i++)
             {
 
-                EntranceOWEditor e = mapInfos.entranceOWsEditor[i];
+                EntranceOWEditor e = jsonData.entranceOWsEditor[i];
 
                 if (e.mapId < offset + 64 && e.mapId >= offset)
                 {
@@ -468,7 +482,7 @@ namespace WinFormMono
 
                     g.FillRectangle(bgrBrush, new Rectangle(e.x,e.y, 16, 16));
                     g.DrawRectangle(contourPen, new Rectangle(e.x,e.y, 16, 16));
-                    DrawText(g, e.entranceId.ToString("X2") + "- " + roomsNames[mapInfos.entrances[e.entranceId].room], new Point(e.x - 1, e.y + 1));
+                    DrawText(g, e.entranceId.ToString("X2") + "- " + roomsNames[jsonData.entrances[e.entranceId].room], new Point(e.x - 1, e.y + 1));
                 }
 
             }
@@ -499,7 +513,7 @@ namespace WinFormMono
             int backupMap = mouseOverMap;
             for (int i = 0; i < 0x13; i++)
             {
-                EntranceOW e = mapInfos.holes[i];
+                EntranceOW e = jsonData.holes[i];
                     if (e.mapId < offset + 64)
                     {
                         Brush bgrBrush = new SolidBrush(Color.FromArgb(180, 20, 20, 20));
@@ -514,7 +528,7 @@ namespace WinFormMono
 
                         g.FillRectangle(bgrBrush, new Rectangle((x * 16) + ((s - ((s / 8) * 8)) * 512), (y * 16) + ((s / 8) * 512), 16, 16));
                         g.DrawRectangle(contourPen, new Rectangle((x * 16) + ((s - ((s / 8) * 8)) * 512), (y * 16) + ((s / 8) * 512), 16, 16));
-                        DrawText(g, e.entranceId.ToString("X2") + "- " + roomsNames[mapInfos.entrances[e.entranceId].room], new Point((x * 16) + ((s - ((s / 8) * 8)) * 512) - 1, (y * 16) + ((s / 8) * 512) + 1));
+                        DrawText(g, e.entranceId.ToString("X2") + "- " + roomsNames[jsonData.entrances[e.entranceId].room], new Point((x * 16) + ((s - ((s / 8) * 8)) * 512) - 1, (y * 16) + ((s / 8) * 512) + 1));
                     }
             }
             mouseOverMap = backupMap;

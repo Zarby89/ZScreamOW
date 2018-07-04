@@ -16,6 +16,9 @@ namespace WinFormMono
         public Color[][] auxPalettes = new Color[20][];
         public Color[] animatedPalettes = new Color[32];
         public Color[] bgrcolor;
+        public Color[][] spritePalettes = new Color[2][];
+        public Color[] aux3spritePalettes = new Color[17 * 7];
+        public Color[] aux2spritePalettes = new Color[15 * 7];
         public byte[] palettesGroups;
         public PaletteHandler(string projectLoaded)
         {
@@ -34,6 +37,13 @@ namespace WinFormMono
             {
                 auxPalettes[i] = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Overworld Palette//Overworld Aux2 "+i.ToString("D2")+".json"));
             }
+
+
+            aux3spritePalettes = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Sprites Palettes//Aux Sprites3" + ".json"));
+            aux2spritePalettes = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Sprites Palettes//Aux Sprites2" + ".json"));
+
+            spritePalettes[0] = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Sprites Palettes//Lightworld Sprites.json"));
+            spritePalettes[1] = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Sprites Palettes//Darkworld Sprites.json"));
             //Animated Palettes
             animatedPalettes = JsonConvert.DeserializeObject<Color[]>(File.ReadAllText(projectLoaded + "//Palettes//Overworld Palette//Overworld Animated.json"));
 

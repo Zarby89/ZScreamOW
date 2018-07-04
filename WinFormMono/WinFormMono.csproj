@@ -53,7 +53,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawTest.cs">
+    <Compile Include="JsonData.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OverworldDisplay.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Entrance.cs" />
@@ -66,11 +73,11 @@
     <Compile Include="EntranceOWEditor.cs" />
     <Compile Include="EntranceOW.cs" />
     <Compile Include="ExitOW.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="OverworldForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="OverworldForm.Designer.cs">
+      <DependentUpon>OverworldForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Map16.cs" />
     <Compile Include="MapInfos.cs" />
@@ -82,12 +89,21 @@
     <Compile Include="Room_Sprite.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Tile16.cs" />
+    <Compile Include="Tile16EditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tile16EditorForm.Designer.cs">
+      <DependentUpon>Tile16EditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TileInfo.cs" />
     <EmbeddedResource Include="EntranceEditorForm.resx">
       <DependentUpon>EntranceEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OverworldForm.resx">
+      <DependentUpon>OverworldForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -98,6 +114,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Tile16EditorForm.resx">
+      <DependentUpon>Tile16EditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

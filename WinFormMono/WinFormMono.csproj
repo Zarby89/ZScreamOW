@@ -53,56 +53,96 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonData.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Gui\AddItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Gui\AddItemForm.Designer.cs">
+      <DependentUpon>AddItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\AddSpriteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\AddSpriteForm.Designer.cs">
+      <DependentUpon>AddSpriteForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\ExitEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\ExitEditorForm.Designer.cs">
+      <DependentUpon>ExitEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataObjects\JsonData.cs" />
+    <Compile Include="Gui\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OverworldDisplay.cs">
+    <Compile Include="Overworld\Scene\ObjectsHandlers\ExitsHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\ItemsHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\SpritesHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\HolesHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\EntrancesHandler.cs" />
+    <Compile Include="Overworld\Scene\OverworldDisplay.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Entrance.cs" />
-    <Compile Include="EntranceEditorForm.cs">
+    <Compile Include="DataObjects\Entrance.cs" />
+    <Compile Include="Gui\EntranceEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EntranceEditorForm.Designer.cs">
+    <Compile Include="Gui\EntranceEditorForm.Designer.cs">
       <DependentUpon>EntranceEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EntranceOWEditor.cs" />
-    <Compile Include="EntranceOW.cs" />
-    <Compile Include="ExitOW.cs" />
-    <Compile Include="OverworldForm.cs">
+    <Compile Include="Overworld\Scene\Objects\EntranceOWEditor.cs" />
+    <Compile Include="DataObjects\EntranceOW.cs" />
+    <Compile Include="DataObjects\ExitOW.cs" />
+    <Compile Include="Gui\OverworldForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OverworldForm.Designer.cs">
+    <Compile Include="Gui\OverworldForm.Designer.cs">
       <DependentUpon>OverworldForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Map16.cs" />
-    <Compile Include="MapInfos.cs" />
-    <Compile Include="MapSave.cs" />
-    <Compile Include="PaletteHandler.cs" />
+    <Compile Include="DataObjects\Map16.cs" />
+    <Compile Include="DataObjects\MapSave.cs" />
+    <Compile Include="Overworld\Scene\Objects\OverworldUndo.cs" />
+    <Compile Include="DataObjects\PaletteHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomPotSave.cs" />
-    <Compile Include="Room_Sprite.cs" />
-    <Compile Include="Scene.cs" />
-    <Compile Include="Tile16.cs" />
-    <Compile Include="Tile16EditorForm.cs">
+    <Compile Include="Overworld\Scene\Objects\RoomPotSaveEditor.cs" />
+    <Compile Include="DataObjects\RoomPotSave.cs" />
+    <Compile Include="Overworld\Scene\Objects\Room_SpriteOWEditor.cs" />
+    <Compile Include="DataObjects\Room_Sprite.cs" />
+    <Compile Include="Overworld\Scene\SceneOverworld.cs" />
+    <Compile Include="DataObjects\Tile16.cs" />
+    <Compile Include="Gui\Tile16EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tile16EditorForm.Designer.cs">
+    <Compile Include="Gui\Tile16EditorForm.Designer.cs">
       <DependentUpon>Tile16EditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TileInfo.cs" />
-    <EmbeddedResource Include="EntranceEditorForm.resx">
+    <Compile Include="DataObjects\TileInfo.cs" />
+    <Compile Include="Gui\tiletypeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\tiletypeForm.Designer.cs">
+      <DependentUpon>tiletypeForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Gui\AddItemForm.resx">
+      <DependentUpon>AddItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\AddSpriteForm.resx">
+      <DependentUpon>AddSpriteForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\EntranceEditorForm.resx">
       <DependentUpon>EntranceEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Gui\ExitEditorForm.resx">
+      <DependentUpon>ExitEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OverworldForm.resx">
+    <EmbeddedResource Include="Gui\OverworldForm.resx">
       <DependentUpon>OverworldForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -114,8 +154,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Tile16EditorForm.resx">
+    <EmbeddedResource Include="Gui\Tile16EditorForm.resx">
       <DependentUpon>Tile16EditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\tiletypeForm.resx">
+      <DependentUpon>tiletypeForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -132,9 +175,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="font.png">
+    <Content Include="Resources\font.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\fonta25.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\fonta50.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Exporter\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

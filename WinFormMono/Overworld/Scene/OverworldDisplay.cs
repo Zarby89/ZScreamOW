@@ -274,13 +274,16 @@ namespace WinFormMono
             //sw.Start();
             if (scene != null)
             {
-                DrawMaps(pe.Graphics);
+
+                    DrawMaps(pe.Graphics);
+
                 if (showGrid)
                 {
                     DrawGrid(pe.Graphics);
                 }
 
-                scene.Draw(pe.Graphics,selectedMap);
+
+                scene.Draw(pe.Graphics, selectedMap);
                 scene.DrawObjects(pe.Graphics);
                 
 
@@ -302,7 +305,7 @@ namespace WinFormMono
             g.CompositingMode = CompositingMode.SourceCopy;
         }
 
-        public void setMode(bool entrances,bool exits,bool sprites,bool tiles,bool holes,bool warp,bool items)
+        public void setMode(bool entrances,bool exits,bool sprites,bool tiles,bool holes,bool warp,bool items,bool overlay)
         {
             if (entrances)
             {
@@ -332,9 +335,14 @@ namespace WinFormMono
             {
                 scene.sceneMode = SceneMode.items;
             }
+            else if (overlay)
+            {
+                scene.sceneMode = SceneMode.overlay;
+            }
         }
 
-
+        ColorMatrix cm = new ColorMatrix();
+        ImageAttributes ia = new ImageAttributes();
         public void DrawMaps(Graphics g)
         {
             if (lightworld)
@@ -346,14 +354,34 @@ namespace WinFormMono
                 worldOffset = 64;
             }
             scene.updateDisplayedMaps(worldOffset);
-            g.CompositingMode = CompositingMode.SourceCopy;
-            g.CompositingQuality = CompositingQuality.HighSpeed;
-            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+
+            cm.Matrix33 = 0.40f;
+            ia.SetColorMatrix(cm);
+            if (scene.sceneMode == SceneMode.overlay)
+            {
+
+                g.CompositingMode = CompositingMode.SourceOver;
+                g.CompositingQuality = CompositingQuality.HighSpeed;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            }
+            else
+            {
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.CompositingQuality = CompositingQuality.HighSpeed;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            }
             int xx = 0;
             int yy = 0;
             for (int i = 0; i < 64; i++)
             {
-                g.DrawImage(allmaps[i + worldOffset].mapGfx, new Point(xx * 512, yy * 512));
+                if (scene.sceneMode == SceneMode.overlay)
+                {
+                    g.DrawImage(allmaps[i + worldOffset].mapGfx, new Rectangle(xx * 512, yy * 512, 512, 512),0, 0, 512, 512, GraphicsUnit.Pixel, ia);
+                }
+                else
+                {
+                    g.DrawImage(allmaps[i + worldOffset].mapGfx,new PointF(xx * 512, yy * 512));
+                }
                 xx++;
                 if (xx >= 8)
                 {

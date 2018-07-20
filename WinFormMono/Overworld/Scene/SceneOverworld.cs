@@ -489,6 +489,10 @@ namespace WinFormMono
                     DrawText(g, selectedMap.largeMap.ToString() + "  ParentID : " + selectedMap.parentMapId.ToString(), new Point(xT * 512, (yT * 512) + 32));
                 }
             }
+            if (sceneMode == SceneMode.overlay)
+            {
+                DrawOverlay(g);
+            }
 
             if (focusedMap != null)
             {
@@ -532,6 +536,43 @@ namespace WinFormMono
 
 
         }
+
+
+        
+        public void DrawOverlay(Graphics g)
+        {
+            IntPtr tileGfxPtr = Marshal.AllocHGlobal(16 * 16);
+            unsafe
+            {
+                int yT = (mouseOverMap / 8);
+                int xT = mouseOverMap - (yT * 8);
+                byte* gfx16Data = (byte*)allgfx16Ptr.ToPointer();
+                byte* gfxData = (byte*)tileGfxPtr.ToPointer();
+                foreach (OverlayData od in jsonData.overlayDatas[mouseOverMap])
+                {
+                    using (Bitmap b = new Bitmap(16, 16, 16, PixelFormat.Format8bppIndexed, tileGfxPtr))
+                    {
+                        b.Palette = selectedMap.GetPalette();
+                        for (int i = 0; i < 16; i++)
+                        {
+                            for (int j = 0; j < 16; j++)
+                            {
+                                gfxData[((0) * 16) + j + (i * 16)] = gfx16Data[GetTilePos(od.tileId) + j + (i * 128)];
+                            }
+                        }
+                        g.DrawImage(b, new Point((xT*512) + (od.x*16), (yT * 512) + (od.y*16)));
+                    }
+                }
+                Marshal.FreeHGlobal(tileGfxPtr);
+            }
+        }
+
+        public int GetTilePos(ushort tile)
+        {
+            return ((tile / 8) * 2048) + ((tile - ((tile / 8) * 8)) * 16);
+        }
+
+
 
         public void DrawText(Graphics g, string text, Point position)
         {
@@ -676,6 +717,6 @@ namespace WinFormMono
 
     public enum SceneMode
     {
-        tiles, entrances, exits, sprites, holes, warps,items,door
+        tiles, entrances, exits, sprites, holes, warps,items,door,overlay
     };
 }

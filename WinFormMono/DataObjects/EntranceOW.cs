@@ -1,16 +1,18 @@
-﻿
-
-public struct EntranceOW
+﻿namespace WinFormMono
 {
-    public short
-        mapPos,
-        mapId;
-    public byte entranceId;
 
-    public EntranceOW(short mapId, short mapPos, byte entranceId)
+    public struct EntranceOW
     {
-        this.mapPos = mapPos;
-        this.mapId = mapId;
-        this.entranceId = entranceId;
+        public short
+            mapPos,
+            mapId;
+        public byte entranceId;
+
+        public EntranceOW(short mapId, short mapPos, byte entranceId)
+        {
+            this.mapPos = mapPos;
+            this.mapId = mapId;
+            this.entranceId = entranceId;
+        }
     }
 }

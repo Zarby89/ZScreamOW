@@ -34,9 +34,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MsgPack, Version=0.1.4298.15470, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MsgPack.0.1.0.2011042300\lib\net40\MsgPack.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -53,6 +50,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="asar.cs" />
+    <Compile Include="Exporter\Classes\Addresses.cs" />
+    <Compile Include="Exporter\Classes\Compression.cs" />
+    <Compile Include="Exporter\Classes\Constants.cs" />
+    <Compile Include="Exporter\Classes\DecHexCalc.cs" />
+    <Compile Include="Exporter\Classes\Dialogue\Charactertable.cs" />
+    <Compile Include="Exporter\Classes\Dialogue\TextData.cs" />
+    <Compile Include="Exporter\Classes\Dungeon\ChestData.cs" />
+    <Compile Include="Exporter\Classes\Dungeon\RoomSave.cs" />
+    <Compile Include="Exporter\Classes\Dungeon\Room_Object.cs" />
+    <Compile Include="Exporter\Classes\Dungeon\Room_Sprite.cs" />
+    <Compile Include="Exporter\Classes\Entrance.cs" />
+    <Compile Include="Exporter\Classes\GFX.cs" />
+    <Compile Include="Exporter\Classes\LoadedProjectStatistics.cs" />
+    <Compile Include="Exporter\Classes\NumberConversion.cs" />
+    <Compile Include="Exporter\Classes\Overworld\EntranceOW.cs" />
+    <Compile Include="Exporter\Classes\Overworld\ExitOW.cs" />
+    <Compile Include="Exporter\Classes\Overworld\Overworld.cs" />
+    <Compile Include="Exporter\Classes\Overworld\Tiles\Tile16.cs" />
+    <Compile Include="Exporter\Classes\Overworld\Tiles\Tile32.cs" />
+    <Compile Include="Exporter\Classes\Overworld\Tiles\TileInfo.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\AddressLoROM.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\Exporter.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\Importer.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\PointerRead.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\RegionId.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\ROM.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\RomIO.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\ROMStructure.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\SaveJson.cs" />
+    <Compile Include="Exporter\Classes\ROM and Data Management\SnesChecksum.cs" />
+    <Compile Include="Exporter\Classes\XML Management\ConstantsReader.cs" />
+    <Compile Include="Exporter\Classes\XML Management\TextAndTranslationManager.cs" />
+    <Compile Include="Exporter\Classes\XML Management\XMLManager.cs" />
+    <Compile Include="Exporter\GUI\form_JSON_manager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporter\GUI\form_JSON_manager.Designer.cs">
+      <DependentUpon>form_JSON_manager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporter\ZCompressLibrary\Common.cs" />
+    <Compile Include="Exporter\ZCompressLibrary\Compress.cs" />
+    <Compile Include="Exporter\ZCompressLibrary\compression_piece.cs" />
+    <Compile Include="Exporter\ZCompressLibrary\Decompress.cs" />
+    <Compile Include="Exporter\ZCompressLibrary\fake_mem.cs" />
     <Compile Include="Gui\AddItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,8 +120,15 @@
     <Compile Include="Gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\ScriptInformationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\ScriptInformationForm.Designer.cs">
+      <DependentUpon>ScriptInformationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Overworld\Scene\ObjectsHandlers\ExitsHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\ItemsHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\OverlaysHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\SpritesHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\HolesHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\EntrancesHandler.cs" />
@@ -127,6 +176,9 @@
     <Compile Include="Gui\tiletypeForm.Designer.cs">
       <DependentUpon>tiletypeForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Exporter\GUI\form_JSON_manager.resx">
+      <DependentUpon>form_JSON_manager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gui\AddItemForm.resx">
       <DependentUpon>AddItemForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\OverworldForm.resx">
       <DependentUpon>OverworldForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\ScriptInformationForm.resx">
+      <DependentUpon>ScriptInformationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -175,6 +230,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="asar.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Constants.JP.xml" />
+    <Content Include="Constants.US.xml" />
+    <Content Include="Resources\EditorCore.asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Main.asm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource.en-US.xml" />
     <Content Include="Resources\font.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -184,9 +254,10 @@
     <Content Include="Resources\fonta50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\xkas.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exporter\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

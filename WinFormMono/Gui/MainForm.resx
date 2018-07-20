@@ -120,4 +120,14 @@
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="runTesttoolStripMenu.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC4SURBVDhPY0AH3759E4AyyQNAA94DsQGUSzoAav7/
+        8v1LkCEJUCHSAMiAmHkR/1+9f/UfyC6AChMPQAZYdJn8d5no8P/So0sgQ+ZDpYgDMANghqw/txZkyHkg
+        Ji5wkQ2A4ekHpoIMuQ/EhAMXmwEgXL+5FmQIKHADoEqxAyIMcIAqxQ6wGbD4+EJYOJDmBVAg7r6yE6R5
+        PxCTFogBM3zIj0aKExIQEw5tXACokbj4xgWAmknIzgwMALn54tyqvkTxAAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>

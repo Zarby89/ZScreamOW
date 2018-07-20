@@ -34,7 +34,7 @@ namespace WinFormMono
 
                 editingExit.doorXEditor = (byte)doorxUpDown.Value;
                 editingExit.doorYEditor = (byte)dooryUpDown.Value;
-
+            }
                 if (wooddoorradioButton.Checked)
                 {
                     editingExit.doorXEditor = (byte)doorxUpDown.Value;
@@ -70,7 +70,7 @@ namespace WinFormMono
                     editingExit.doorType2 = 0;
                     editingExit.doorType1 = 0;
                 }
-            }
+            
 
         }
 

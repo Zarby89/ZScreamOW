@@ -26,6 +26,9 @@ namespace WinFormMono
         {
             statecomboBox1.SelectedIndex = 0;
             toolStripRedoButton.Enabled = false;
+
+            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -179,8 +182,9 @@ namespace WinFormMono
             toolStripHoleButton.Checked = false;
             toolStripItemsButton.Checked = false;
             toolStripSpriteButton.Checked = false;
+            overlaytoolStripButton.Checked = false;
             (sender as ToolStripButton).Checked = true;
-            overworldDisplay.setMode(toolStripEntrancesButton.Checked, toolStripExitsButton.Checked, toolStripSpriteButton.Checked, toolStripPenButton.Checked,toolStripHoleButton.Checked,toolStripWarpButton.Checked,toolStripItemsButton.Checked);
+            overworldDisplay.setMode(toolStripEntrancesButton.Checked, toolStripExitsButton.Checked, toolStripSpriteButton.Checked, toolStripPenButton.Checked,toolStripHoleButton.Checked,toolStripWarpButton.Checked,toolStripItemsButton.Checked,overlaytoolStripButton.Checked);
 
 
         }
@@ -346,6 +350,11 @@ namespace WinFormMono
                 File.WriteAllText(File.ReadAllText("Exported//Overworld//Maps//Map" + i.ToString("D3") + ".json"), JsonConvert.SerializeObject(jsonData.mapdata[i]));
             }*/
 
+            jsonData.SaveAll(overworldDisplay.allmaps);
+        }
+
+        public void saveOverworld()
+        {
             jsonData.SaveAll(overworldDisplay.allmaps);
         }
 

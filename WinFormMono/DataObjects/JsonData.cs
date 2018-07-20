@@ -35,6 +35,7 @@ namespace WinFormMono
         public List<Room_Sprite>[] spritesOW = new List<Room_Sprite>[3];
         public List<Room_SpriteOWEditor>[] spritesOWEditor = new List<Room_SpriteOWEditor>[3];
         public byte[][] tileTypeSet = new byte[16][];
+        public List<OverlayData>[] overlayDatas;
         public JsonData(string projectLoaded)
         {
             this.projectLoaded = projectLoaded;
@@ -97,6 +98,9 @@ namespace WinFormMono
             alltiles16 = JsonConvert.DeserializeObject<Tile16[]>(File.ReadAllText(projectLoaded + "//Overworld//Tiles16.json"));
 
             File.WriteAllText(projectLoaded + "//Overworld//Tiles16Backup.json", JsonConvert.SerializeObject(alltiles16));
+
+
+            overlayDatas = JsonConvert.DeserializeObject<List<OverlayData>[]>(File.ReadAllText(projectLoaded + "//Overworld//Overlays.json"));
 
             gameTexts = JsonConvert.DeserializeObject<string[]>(File.ReadAllText(projectLoaded + "//Texts//AllTexts.json"));
             linkGfx = new Bitmap(128, 448);

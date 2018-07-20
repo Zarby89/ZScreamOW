@@ -74,6 +74,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.overlaytoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.overworldDisplay = new WinFormMono.OverworldDisplay();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -110,6 +111,7 @@
             this.toolStripExitsButton,
             this.toolStripHoleButton,
             this.toolStripButton13,
+            this.overlaytoolStripButton,
             this.toolStripSeparator3,
             this.transparencyButton,
             this.gridtoolStripButton,
@@ -177,7 +179,7 @@
             this.toolStripPenButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripPenButton.Name = "toolStripPenButton";
             this.toolStripPenButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripPenButton.Text = "toolStripButton7";
+            this.toolStripPenButton.Text = "Tiles Mode";
             this.toolStripPenButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripPenButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -189,7 +191,7 @@
             this.toolStripSpriteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSpriteButton.Name = "toolStripSpriteButton";
             this.toolStripSpriteButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripSpriteButton.Text = "toolStripButton6";
+            this.toolStripSpriteButton.Text = "Sprite Mode";
             this.toolStripSpriteButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripSpriteButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -201,7 +203,7 @@
             this.toolStripItemsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripItemsButton.Name = "toolStripItemsButton";
             this.toolStripItemsButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripItemsButton.Text = "toolStripButton8";
+            this.toolStripItemsButton.Text = "Item Mode";
             this.toolStripItemsButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripItemsButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -213,7 +215,7 @@
             this.toolStripWarpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripWarpButton.Name = "toolStripWarpButton";
             this.toolStripWarpButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripWarpButton.Text = "toolStripButton9";
+            this.toolStripWarpButton.Text = "Transport Mode";
             this.toolStripWarpButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripWarpButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -225,7 +227,7 @@
             this.toolStripEntrancesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripEntrancesButton.Name = "toolStripEntrancesButton";
             this.toolStripEntrancesButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripEntrancesButton.Text = "toolStripButton10";
+            this.toolStripEntrancesButton.Text = "Entrance Mode";
             this.toolStripEntrancesButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripEntrancesButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -237,7 +239,7 @@
             this.toolStripExitsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripExitsButton.Name = "toolStripExitsButton";
             this.toolStripExitsButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripExitsButton.Text = "toolStripButton11";
+            this.toolStripExitsButton.Text = "Exit Mode";
             this.toolStripExitsButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripExitsButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -249,7 +251,7 @@
             this.toolStripHoleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripHoleButton.Name = "toolStripHoleButton";
             this.toolStripHoleButton.Size = new System.Drawing.Size(23, 22);
-            this.toolStripHoleButton.Text = "toolStripButton12";
+            this.toolStripHoleButton.Text = "Hole Mode";
             this.toolStripHoleButton.CheckedChanged += new System.EventHandler(this.toolStripPenButton_CheckedChanged);
             this.toolStripHoleButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
             // 
@@ -597,6 +599,17 @@
             this.updateTimer.Interval = 50;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
+            // overlaytoolStripButton
+            // 
+            this.overlaytoolStripButton.CheckOnClick = true;
+            this.overlaytoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.overlaytoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("overlaytoolStripButton.Image")));
+            this.overlaytoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.overlaytoolStripButton.Name = "overlaytoolStripButton";
+            this.overlaytoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.overlaytoolStripButton.Text = "Overlay Mode";
+            this.overlaytoolStripButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
+            // 
             // overworldDisplay
             // 
             this.overworldDisplay.Location = new System.Drawing.Point(0, 0);
@@ -688,6 +701,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown tiletypesetUpDown;
         private System.Windows.Forms.ToolStripButton debugtoolStripButton;
+        private System.Windows.Forms.ToolStripButton overlaytoolStripButton;
     }
 }
 

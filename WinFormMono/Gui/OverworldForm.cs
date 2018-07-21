@@ -26,9 +26,9 @@ namespace WinFormMono
         {
             statecomboBox1.SelectedIndex = 0;
             toolStripRedoButton.Enabled = false;
-
-            
-
+            overworldDisplay.selectedTile = 0;
+            overworldDisplay.selectedMap = overworldDisplay.allmaps[0];
+            overworldDisplay.Refresh();
         }
 
         private void button1_Click(object sender, EventArgs e)

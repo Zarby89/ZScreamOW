@@ -45,7 +45,7 @@ namespace ZScream_Exporter
             text[0] = "";
             //File.WriteAllText(ProjectDirectorySlash + "Project.zscr", writeProjectConfig());
             File.WriteAllText(ProjectDirectorySlash + "Project.zscr", JsonConvert.SerializeObject(text));
-            Task[] tasks = new Task[19];
+            Task[] tasks = new Task[20];
 
             tasks[0] = Task.Run(() => { writeRooms(ProjectDirectorySlash); });
             tasks[1] = Task.Run(() => { writeEntrances(ProjectDirectorySlash); });
@@ -66,13 +66,48 @@ namespace ZScream_Exporter
             tasks[16] = Task.Run(() => { writeOverworldTilesType(ProjectDirectorySlash); });
             tasks[17] = Task.Run(() => { writeOverlays(ProjectDirectorySlash); });
             tasks[18] = Task.Run(() => { writeASMstuff(ProjectDirectorySlash,romPath); });
-
+            tasks[19] = Task.Run(() => { writeTransportstuff(ProjectDirectorySlash); });
+            
 
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i].Wait();
             }
 
+        }
+
+        public void writeTransportstuff(string path)
+        {
+
+            if (!Directory.Exists(path + "Overworld"))
+            {
+                Directory.CreateDirectory(path + "Overworld");
+            }
+            if (!Directory.Exists(path + "Overworld//Entrances"))
+            {
+                Directory.CreateDirectory(path + "Overworld//Entrances");
+            }
+
+            ExitOWWhirlpool[] whirlpool = new ExitOWWhirlpool[0x08];
+            for (int i = 0; i < 0x08; i++)
+            {
+                short[] e = new short[13];
+                e[0] = (byte)((ROM.DATA[ConstantsReader.GetAddress("OWExitMapIdWhirlpool") + i]));
+                e[1] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitVramWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitVramWhirlpool") + (i * 2)]));
+                e[2] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitYScrollWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitYScrollWhirlpool") + (i * 2)]));
+                e[3] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitXScrollWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitXScrollWhirlpool") + (i * 2)]));
+                e[4] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitYPlayerWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitYPlayerWhirlpool") + (i * 2)]));
+                e[5] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitXPlayerWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitXPlayerWhirlpool") + (i * 2)]));
+                e[6] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitYCameraWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitYCameraWhirlpool") + (i * 2)]));
+                e[7] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWExitXCameraWhirlpool") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWExitXCameraWhirlpool") + (i * 2)]));
+                e[8] = (byte)((ROM.DATA[ConstantsReader.GetAddress("OWExitUnk1Whirlpool") + i]));
+                e[9] = (byte)((ROM.DATA[ConstantsReader.GetAddress("OWExitUnk2Whirlpool") + i]));
+                e[10] = (short)((ROM.DATA[ConstantsReader.GetAddress("OWWhirlpoolPosition") + (i * 2) + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("OWWhirlpoolPosition") + (i * 2)]));
+                ExitOWWhirlpool eo = (new ExitOWWhirlpool((byte)e[0], e[1], e[2], e[3], e[4], e[5], e[6], e[7], (byte)e[8], (byte)e[9],e[10]));
+                whirlpool[i] = eo;
+            }
+
+            File.WriteAllText(path + "Overworld//Entrances//Whirlpool.json", JsonConvert.SerializeObject(whirlpool));
         }
 
         public void writeASMstuff(string path, string rompath)

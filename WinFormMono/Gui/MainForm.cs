@@ -22,10 +22,8 @@ namespace WinFormMono
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            overworldForm.Enabled = false;
 
-            //SUB.w #$0400 : AND.w #$0F80 : ASL A : XBA : STA $88
-            //LDA $84 : SUB.w #$0010 : AND.w #$003E : LSR A : STA $86
-            
 
         }
         OverworldForm overworldForm = new OverworldForm();
@@ -42,6 +40,7 @@ namespace WinFormMono
             of.Filter = "ZScream Project (*.zscr)|*.zscr";
             if (of.ShowDialog() == DialogResult.OK)
             {
+
                 loadedProject = Path.GetDirectoryName(of.FileName);
                 configs = JsonConvert.DeserializeObject<string[]>(File.ReadAllText(loadedProject + "//Project.zscr"));
                 emulatorPath = configs[0];
@@ -144,6 +143,11 @@ namespace WinFormMono
                     (item as ToolStripMenuItem).Checked = true;
                     (item as ToolStripMenuItem).CheckOnClick = true;
                 }
+                if (item.Text == "EditorCore.asm")
+                {
+                    (item as ToolStripMenuItem).CheckOnClick = false;
+                }
+
                 ToolStripItem itemInfo = scriptsToolStripMenuItem.DropDownItems.Add("Information");
                 itemInfo.Tag = id;
                 itemInfo.Click += ItemInfo_Click;
@@ -175,22 +179,25 @@ namespace WinFormMono
 
         private void overworldEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (overworldForm.Visible == false)
-            //{
-                overworldForm.MdiParent = this;
-                overworldForm.Show();
-           // }
+            if (loadedProject != "")
+            {
+            
+            overworldForm.MdiParent = this;
+            overworldForm.Show();
+            }
         }
 
         private void runTesttoolStripMenu_Click(object sender, EventArgs e)
         {
-            overworldForm.saveOverworld();
+            
 
             if (loadedProject == "")
             {
                 MessageBox.Show("You must have a project loaded first!", "Error");
                 return;
             }
+
+            overworldForm.saveOverworld();
 
             if (!File.Exists(loadedProject + "//TestROM//test.sfc"))
             {
@@ -300,6 +307,53 @@ namespace WinFormMono
             exporter = null;
            
 
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox1 aboutForm = new AboutBox1();
+            aboutForm.ShowDialog();
+        }
+
+        private void patchROMWithLoadedProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (loadedProject == "")
+            {
+                MessageBox.Show("You must have a project loaded first!", "Error");
+                return;
+            }
+
+            overworldForm.saveOverworld();
+            string fname = "";
+            using (OpenFileDialog of = new OpenFileDialog())
+            {
+                of.ShowDialog();
+                of.Filter = "Snes ROM to patch (*.sfc)|*.sfc";
+                fname = of.FileName;
+                if (!File.Exists(of.FileName))
+                {
+                    return;
+                }
+            }
+
+            FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
+            int size = (int)fs.Length;
+            if (size < 0x200000)
+            {
+                size = 0x200000;
+            }
+            byte[] temp = new byte[size];
+            fs.Read(temp, 0, (int)fs.Length);
+            fs.Close();
+
+            ZScream_Exporter.ROM.SetRom(temp, out bool isHeadered);
+
+            temp = null;
+
+            ZScream_Exporter.Importer importer = new ZScream_Exporter.Importer(loadedProject, ZScream_Exporter.ROM.DATA,fname);
+
+            MessageBox.Show("Patched successfully " + fname.ToString());
         }
     }
 }

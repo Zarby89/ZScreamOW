@@ -140,7 +140,7 @@ namespace WinFormMono
             map.LoadPalette(jsonData.allPalettes);
             map.BuildMap(allgfx16Ptr);
         }
-
+        bool deleting = false;
         public void Scene_MouseTileChanged(MouseEventArgs e, Map16 map, IntPtr allgfx8array)
         {
             int mx = (mouse_tile_x / 32);
@@ -216,6 +216,52 @@ namespace WinFormMono
                         //overlayGraphics.DrawRectangle(new Pen(Brushes.Yellow), new Rectangle(startX * 16, startY * 16, (sizeX * 16), (sizeY * 16)));
                     }
 
+                }
+                else if (sceneMode == SceneMode.overlay)
+                {
+                    int mid = mouseOverMap;
+                    if (allmaps[mouseOverMap].parentMapId != 255)
+                    {
+                        mid = allmaps[mouseOverMap].parentMapId;
+                    }
+                    int yT = (mid / 8);
+                    int xT = mid - (yT * 8);
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        OverlayData toChange = new OverlayData(50, 50, 5000);
+                        foreach (OverlayData od in jsonData.overlayDatas[mid])
+                        {
+                            if ((mouse_x - (xT*512)) >= (od.x * 16) && (mouse_x - (xT * 512)) < (od.x * 16) + 16 &&
+                                (mouse_y - (yT * 512)) >= (od.y * 16) && (mouse_y - (yT * 512)) < (od.y * 16) + 16)
+                            {
+                                toChange = od;
+                            }
+                        }
+
+                        if (toChange.tileId != 5000)
+                        {
+                            jsonData.overlayDatas[mid].Remove(toChange);
+                        }
+                        if (selectedTiles[0, 0] != 0)
+                        {
+                            jsonData.overlayDatas[mid].Add(new OverlayData((byte)((mouse_x - (xT * 512)) / 16), (byte)((mouse_y - (yT * 512)) / 16), selectedTiles[0, 0]));
+                        }
+                    }
+                    else if (e.Button == MouseButtons.Right)
+                    {
+                        selectedTiles[0, 0] = 0;
+                        Console.WriteLine("mapid = " + mid.ToString() + "," + mouse_x + "," + mouse_y);
+                        foreach (OverlayData od in jsonData.overlayDatas[mid])
+                        {
+                            if ((mouse_x) >= (od.x * 16) && (mouse_x) <= ((od.x * 16) + 16) &&
+                                (mouse_y) >= (od.y * 16) && (mouse_y) <= ((od.y * 16) + 16))
+                            {
+                                Console.WriteLine(mouse_x + "," + mouse_y);
+                                selectedTiles[0, 0] = od.tileId;
+                                break;
+                            }
+                        }
+                    }
                 }
                 else if (sceneMode == SceneMode.entrances)
                 {
@@ -316,6 +362,52 @@ namespace WinFormMono
                 map.UpdateMap(allgfx16Ptr);
                 //setOverlaytiles(allgfx16Ptr);
                 //map.setTile(allgfx16Ptr,mouse_tile_x, mouse_tile_y, 500);
+            }
+            else if (sceneMode == SceneMode.overlay)
+            {
+                int mid = mouseOverMap;
+                if (allmaps[mouseOverMap].parentMapId != 255)
+                {
+                    mid = allmaps[mouseOverMap].parentMapId;
+                }
+                int yT = (mid / 8);
+                int xT = mid - (yT * 8);
+                if (e.Button == MouseButtons.Left)
+                {
+                        OverlayData toChange = new OverlayData(50, 50, 5000);
+                        foreach (OverlayData od in jsonData.overlayDatas[mid])
+                        {
+                            if ((mouse_x - (xT * 512)) >= (od.x * 16) && (mouse_x - (xT * 512)) < (od.x * 16) + 16 &&
+                                (mouse_y - (yT * 512)) >= (od.y * 16) && (mouse_y - (yT * 512)) < (od.y * 16) + 16)
+                            {
+                                toChange = od;
+                            }
+                        }
+
+                        if (toChange.tileId != 5000)
+                        {
+                            jsonData.overlayDatas[mid].Remove(toChange);
+                        }
+                        if (selectedTiles[0, 0] != 0)
+                        {
+                        jsonData.overlayDatas[mid].Add(new OverlayData((byte)((mouse_x - (xT * 512)) / 16), (byte)((mouse_y - (yT * 512)) / 16), selectedTiles[0, 0]));
+                    }
+                    }
+                    else if (e.Button == MouseButtons.Right)
+                    {
+                        selectedTiles[0, 0] = 0;
+                        Console.WriteLine("mapid = " + mid.ToString() + "," + mouse_x + "," + mouse_y);
+                        foreach (OverlayData od in jsonData.overlayDatas[mid])
+                        {
+                            if ((mouse_x) >= (od.x * 16) && (mouse_x) <= ((od.x * 16) + 16) &&
+                                (mouse_y) >= (od.y * 16) && (mouse_y) <= ((od.y * 16) + 16))
+                            {
+                                Console.WriteLine(mouse_x + "," + mouse_y);
+                                selectedTiles[0, 0] = od.tileId;
+                                break;
+                            }
+                        }
+                    }
             }
             mouse_down = true;
         }
@@ -474,7 +566,7 @@ namespace WinFormMono
                 g.CompositingMode = CompositingMode.SourceCopy;
                 g.DrawRectangle(Pens.LightGreen, selectionSize);
             }
-            else if (sceneMode == SceneMode.door)
+            else if (sceneMode == SceneMode.door || sceneMode == SceneMode.overlay)
             {
                 g.DrawImage(selectedTilesGfx, new Rectangle((mouse_tile_x * 16), (mouse_tile_y * 16), (selectedTiles.GetLength(0) * 16), (selectedTiles.GetLength(1) * 16)), 0, 0, (selectedTiles.GetLength(0) * 16), (selectedTiles.GetLength(1) * 16), GraphicsUnit.Pixel);
                 g.DrawRectangle(Pens.LightGreen, selectionSize);
@@ -544,25 +636,32 @@ namespace WinFormMono
             IntPtr tileGfxPtr = Marshal.AllocHGlobal(16 * 16);
             unsafe
             {
-                int yT = (mouseOverMap / 8);
-                int xT = mouseOverMap - (yT * 8);
+
                 byte* gfx16Data = (byte*)allgfx16Ptr.ToPointer();
                 byte* gfxData = (byte*)tileGfxPtr.ToPointer();
-                foreach (OverlayData od in jsonData.overlayDatas[mouseOverMap])
+                int mid = mouseOverMap;
+                if (allmaps[mouseOverMap].parentMapId != 255)
                 {
-                    using (Bitmap b = new Bitmap(16, 16, 16, PixelFormat.Format8bppIndexed, tileGfxPtr))
-                    {
-                        b.Palette = selectedMap.GetPalette();
-                        for (int i = 0; i < 16; i++)
-                        {
-                            for (int j = 0; j < 16; j++)
-                            {
-                                gfxData[((0) * 16) + j + (i * 16)] = gfx16Data[GetTilePos(od.tileId) + j + (i * 128)];
-                            }
-                        }
-                        g.DrawImage(b, new Point((xT*512) + (od.x*16), (yT * 512) + (od.y*16)));
-                    }
+                    mid = allmaps[mouseOverMap].parentMapId;
                 }
+                int yT = (mid / 8);
+                int xT = mid - (yT * 8);
+                foreach (OverlayData od in jsonData.overlayDatas[mid])
+                    {
+                        using (Bitmap b = new Bitmap(16, 16, 16, PixelFormat.Format8bppIndexed, tileGfxPtr))
+                        {
+                            b.Palette = selectedMap.GetPalette();
+                            for (int i = 0; i < 16; i++)
+                            {
+                                for (int j = 0; j < 16; j++)
+                                {
+                                    gfxData[((0) * 16) + j + (i * 16)] = gfx16Data[GetTilePos(od.tileId) + j + (i * 128)];
+                                }
+                            }
+                            g.DrawImage(b, new Point((xT * 512) + (od.x * 16), (yT * 512) + (od.y * 16)));
+                        }
+                    }
+                
                 Marshal.FreeHGlobal(tileGfxPtr);
             }
         }

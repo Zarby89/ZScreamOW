@@ -45,6 +45,7 @@
             this.toolStripExitsButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripHoleButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton13 = new System.Windows.Forms.ToolStripButton();
+            this.overlaytoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.transparencyButton = new System.Windows.Forms.ToolStripButton();
             this.gridtoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -52,6 +53,7 @@
             this.debugtoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tilesetPicturebox = new System.Windows.Forms.PictureBox();
+            this.overworldDisplay = new WinFormMono.OverworldDisplay();
             this.panelInfos = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.tiletypesetUpDown = new System.Windows.Forms.NumericUpDown();
@@ -74,14 +76,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
-            this.overlaytoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.overworldDisplay = new WinFormMono.OverworldDisplay();
+            this.overlaycheckBox = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tilesetPicturebox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.overworldDisplay)).BeginInit();
             this.panelInfos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tiletypesetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textUpDown)).BeginInit();
@@ -91,7 +94,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.paletteUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.blocksetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedtileUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.overworldDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -119,7 +121,7 @@
             this.debugtoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(834, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(925, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -266,6 +268,17 @@
             this.toolStripButton13.Text = "toolStripButton5";
             this.toolStripButton13.Click += new System.EventHandler(this.toolStripButton13_Click);
             // 
+            // overlaytoolStripButton
+            // 
+            this.overlaytoolStripButton.CheckOnClick = true;
+            this.overlaytoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.overlaytoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("overlaytoolStripButton.Image")));
+            this.overlaytoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.overlaytoolStripButton.Name = "overlaytoolStripButton";
+            this.overlaytoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.overlaytoolStripButton.Text = "Overlay Mode";
+            this.overlaytoolStripButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -335,7 +348,7 @@
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Panel2.Controls.Add(this.overworldDisplay);
-            this.splitContainer1.Size = new System.Drawing.Size(834, 494);
+            this.splitContainer1.Size = new System.Drawing.Size(925, 494);
             this.splitContainer1.SplitterDistance = 149;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 5;
@@ -350,8 +363,20 @@
             this.tilesetPicturebox.Paint += new System.Windows.Forms.PaintEventHandler(this.tilesetPicturebox_Paint);
             this.tilesetPicturebox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tilesetPicturebox_MouseDown);
             // 
+            // overworldDisplay
+            // 
+            this.overworldDisplay.Location = new System.Drawing.Point(0, 0);
+            this.overworldDisplay.Name = "overworldDisplay";
+            this.overworldDisplay.Size = new System.Drawing.Size(4096, 4096);
+            this.overworldDisplay.TabIndex = 2;
+            this.overworldDisplay.TabStop = false;
+            this.overworldDisplay.Click += new System.EventHandler(this.overworldDisplay_Click);
+            this.overworldDisplay.MouseClick += new System.Windows.Forms.MouseEventHandler(this.overworldDisplay_MouseClick);
+            // 
             // panelInfos
             // 
+            this.panelInfos.Controls.Add(this.checkBox2);
+            this.panelInfos.Controls.Add(this.overlaycheckBox);
             this.panelInfos.Controls.Add(this.label10);
             this.panelInfos.Controls.Add(this.tiletypesetUpDown);
             this.panelInfos.Controls.Add(this.textUpDown);
@@ -375,7 +400,7 @@
             this.panelInfos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelInfos.Location = new System.Drawing.Point(0, 25);
             this.panelInfos.Name = "panelInfos";
-            this.panelInfos.Size = new System.Drawing.Size(834, 42);
+            this.panelInfos.Size = new System.Drawing.Size(925, 42);
             this.panelInfos.TabIndex = 6;
             // 
             // label10
@@ -599,32 +624,32 @@
             this.updateTimer.Interval = 50;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
-            // overlaytoolStripButton
+            // overlaycheckBox
             // 
-            this.overlaytoolStripButton.CheckOnClick = true;
-            this.overlaytoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.overlaytoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("overlaytoolStripButton.Image")));
-            this.overlaytoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.overlaytoolStripButton.Name = "overlaytoolStripButton";
-            this.overlaytoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.overlaytoolStripButton.Text = "Overlay Mode";
-            this.overlaytoolStripButton.Click += new System.EventHandler(this.toolStripPenButton_Click);
+            this.overlaycheckBox.AutoSize = true;
+            this.overlaycheckBox.Location = new System.Drawing.Point(827, 3);
+            this.overlaycheckBox.Name = "overlaycheckBox";
+            this.overlaycheckBox.Size = new System.Drawing.Size(62, 17);
+            this.overlaycheckBox.TabIndex = 23;
+            this.overlaycheckBox.Text = "Overlay";
+            this.overlaycheckBox.UseVisualStyleBackColor = true;
             // 
-            // overworldDisplay
+            // checkBox2
             // 
-            this.overworldDisplay.Location = new System.Drawing.Point(0, 0);
-            this.overworldDisplay.Name = "overworldDisplay";
-            this.overworldDisplay.Size = new System.Drawing.Size(4096, 4096);
-            this.overworldDisplay.TabIndex = 2;
-            this.overworldDisplay.TabStop = false;
-            this.overworldDisplay.Click += new System.EventHandler(this.overworldDisplay_Click);
-            this.overworldDisplay.MouseClick += new System.Windows.Forms.MouseEventHandler(this.overworldDisplay_MouseClick);
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Enabled = false;
+            this.checkBox2.Location = new System.Drawing.Point(827, 21);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(77, 17);
+            this.checkBox2.TabIndex = 24;
+            this.checkBox2.Text = "Large Map";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // OverworldForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(834, 561);
+            this.ClientSize = new System.Drawing.Size(925, 561);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.panelInfos);
             this.Controls.Add(this.toolStrip1);
@@ -639,6 +664,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tilesetPicturebox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.overworldDisplay)).EndInit();
             this.panelInfos.ResumeLayout(false);
             this.panelInfos.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tiletypesetUpDown)).EndInit();
@@ -649,7 +675,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.paletteUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.blocksetUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedtileUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.overworldDisplay)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -702,6 +727,8 @@
         private System.Windows.Forms.NumericUpDown tiletypesetUpDown;
         private System.Windows.Forms.ToolStripButton debugtoolStripButton;
         private System.Windows.Forms.ToolStripButton overlaytoolStripButton;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox overlaycheckBox;
     }
 }
 

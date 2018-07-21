@@ -88,20 +88,20 @@
             this.fromROMToolStripMenuItem,
             this.fromJsonFilesToolStripMenuItem});
             this.openROMToolStripMenuItem.Name = "openROMToolStripMenuItem";
-            this.openROMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openROMToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.openROMToolStripMenuItem.Text = "Load Project";
             // 
             // fromROMToolStripMenuItem
             // 
             this.fromROMToolStripMenuItem.Name = "fromROMToolStripMenuItem";
-            this.fromROMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fromROMToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.fromROMToolStripMenuItem.Text = "From ROM";
             this.fromROMToolStripMenuItem.Click += new System.EventHandler(this.FromROMToolStripMenuItem_Click);
             // 
             // fromJsonFilesToolStripMenuItem
             // 
             this.fromJsonFilesToolStripMenuItem.Name = "fromJsonFilesToolStripMenuItem";
-            this.fromJsonFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fromJsonFilesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.fromJsonFilesToolStripMenuItem.Text = "From Json Files";
             this.fromJsonFilesToolStripMenuItem.Click += new System.EventHandler(this.FromJsonFilesToolStripMenuItem_Click);
             // 
@@ -111,7 +111,7 @@
             this.toJsonToolStripMenuItem,
             this.toROMToolStripMenuItem});
             this.exportLoadedProjectToROMToolStripMenuItem.Name = "exportLoadedProjectToROMToolStripMenuItem";
-            this.exportLoadedProjectToROMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportLoadedProjectToROMToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exportLoadedProjectToROMToolStripMenuItem.Text = "Export Project";
             // 
             // toJsonToolStripMenuItem

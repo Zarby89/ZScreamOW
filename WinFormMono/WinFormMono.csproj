@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
     <Compile Include="asar.cs" />
     <Compile Include="Exporter\Classes\Addresses.cs" />
     <Compile Include="Exporter\Classes\Compression.cs" />
@@ -66,6 +72,7 @@
     <Compile Include="Exporter\Classes\LoadedProjectStatistics.cs" />
     <Compile Include="Exporter\Classes\NumberConversion.cs" />
     <Compile Include="Exporter\Classes\Overworld\EntranceOW.cs" />
+    <Compile Include="Exporter\Classes\Overworld\ExitOWWhirlpool.cs" />
     <Compile Include="Exporter\Classes\Overworld\ExitOW.cs" />
     <Compile Include="Exporter\Classes\Overworld\Overworld.cs" />
     <Compile Include="Exporter\Classes\Overworld\Tiles\Tile16.cs" />
@@ -129,6 +136,7 @@
     <Compile Include="Overworld\Scene\ObjectsHandlers\ExitsHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\ItemsHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\OverlaysHandler.cs" />
+    <Compile Include="Overworld\Scene\ObjectsHandlers\TransportsHander.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\SpritesHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\HolesHandler.cs" />
     <Compile Include="Overworld\Scene\ObjectsHandlers\EntrancesHandler.cs" />
@@ -176,6 +184,9 @@
     <Compile Include="Gui\tiletypeForm.Designer.cs">
       <DependentUpon>tiletypeForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Exporter\GUI\form_JSON_manager.resx">
       <DependentUpon>form_JSON_manager.cs</DependentUpon>
     </EmbeddedResource>

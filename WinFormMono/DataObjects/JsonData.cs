@@ -123,6 +123,12 @@ namespace WinFormMono
             saveTilesTypes();
             saveTiles16();
             SaveHoles();
+            saveOverlay();
+        }
+
+        public void saveOverlay()
+        {
+            File.WriteAllText(projectLoaded + "//Overworld//Overlays.json", JsonConvert.SerializeObject(overlayDatas));
         }
 
         public void saveTiles16()

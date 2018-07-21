@@ -52,6 +52,24 @@
     <data id="overlayPointersBank">0x0E</data>
     <data id="overworldTilesType">0x71459</data>
     <data id="overworldMessages">0x3F51D</data><!--short value-->
+  
+  
+    <!--===========================================================================================-->
+    <!--Overworld Whirlpool Related Variables-->
+    <!--===========================================================================================-->
+    <data id="OWExitMapIdWhirlpool">0x16AE5</data>
+    <data id="OWExitVramWhirlpool">0x16B07</data>
+    <data id="OWExitYScrollWhirlpool">0x16B29</data>
+    <data id="OWExitXScrollWhirlpool">0x16B4B</data>
+    <data id="OWExitYPlayerWhirlpool">0x16B6D</data>
+    <data id="OWExitXPlayerWhirlpool">0x16B8F</data>
+    <data id="OWExitYCameraWhirlpool">0x16BB1</data>
+    <data id="OWExitXCameraWhirlpool">0x16BD3</data>
+    <data id="OWExitUnk1Whirlpool">0x16BF5</data>
+    <data id="OWExitUnk2Whirlpool">0x16C17</data>
+    <data id="OWWhirlpoolPosition">0x16CF8</data><!--(0x10 entries, 2 bytes each) map16 coordinates for each whirlpool-->
+
+  
     <!--===========================================================================================-->
     <!--Overworld Exits/Entrances Variables-->
     <!--===========================================================================================-->
@@ -74,7 +92,6 @@
     <data id="OWHolePos">0xDB800</data><!--(0x13 entries, 2 bytes each) modified(less 0x400) map16 coordinates for each hole-->
     <data id="OWHoleArea">0xDB826</data><!--(0x13 entries, 2 bytes each) corresponding area numbers for each hole-->
     <data id="OWHoleEntrance">0xDB84C</data><!--(0x13 entries, 1 byte each)  corresponding entrance numbers-->
-    <data id="OWWhirlpoolPosition">0x16CF8</data><!--(0x10 entries, 2 bytes each) map16 coordinates for each whirlpool-->
     <!--===========================================================================================-->
     <!--Dungeon Related Variables-->
     <!--===========================================================================================-->

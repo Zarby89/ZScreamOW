@@ -44,6 +44,7 @@
             this.runTesttoolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,6 +100,7 @@
             this.patchROMWithLoadedProjectToolStripMenuItem.Name = "patchROMWithLoadedProjectToolStripMenuItem";
             this.patchROMWithLoadedProjectToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.patchROMWithLoadedProjectToolStripMenuItem.Text = "Patch ROM with current project";
+            this.patchROMWithLoadedProjectToolStripMenuItem.Click += new System.EventHandler(this.patchROMWithLoadedProjectToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -159,9 +161,18 @@
             // 
             // helpToolStripMenuItem
             // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -198,5 +209,6 @@
         private System.Windows.Forms.ToolStripMenuItem runTesttoolStripMenu;
         private System.Windows.Forms.ToolStripMenuItem setEmulatorPathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem scriptsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }

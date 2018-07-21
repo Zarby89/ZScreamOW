@@ -24,7 +24,7 @@ namespace ZScream_Exporter
         private byte[] romData;
         public int DataOffset = 0x000000;
         public string path = "";
-        public Importer(string path, byte[] romData)
+        public Importer(string path, byte[] romData, string fname = "")
         {
             //this.logTextbox = logTextbox;
             //this.progressBar = progressBar;
@@ -42,7 +42,7 @@ namespace ZScream_Exporter
             //In case the ROM already have data in the 2MB portion this could be changed to be in 3MB or 4MB
             //Will be in the config file later the Editor use 1MB portion you can chose which one ;)
             //IF RANDO public int DataOffset = 0x100000; 
-            Import();
+            Import(fname);
         }
 
         public MapSave[] all_maps = new MapSave[160];
@@ -51,7 +51,7 @@ namespace ZScream_Exporter
         List<Room_Sprite>[] roomSpritesBeginning = new List<Room_Sprite>[64];
         List<Room_Sprite>[] roomSpritesZelda = new List<Room_Sprite>[143];
         List<Room_Sprite>[] roomSpritesAgahnim = new List<Room_Sprite>[143];
-        public void Import()
+        public void Import(string fname = "")
         {
             RegionId.GenerateRegion();
             ConstantsReader.SetupRegion(RegionId.myRegion, "../../");
@@ -76,7 +76,7 @@ namespace ZScream_Exporter
                 // {
 
                 //}
-                runAsar(path);
+                runAsar(path,fname);
 
             }
             catch (Exception e)
@@ -86,20 +86,39 @@ namespace ZScream_Exporter
             }
         }
 
-        public void runAsar(string path)
+        public void runAsar(string path, string fname = "")
         {
             string arg2 = "\\ASM\\Main.asm";
 
             Asar.init();
-            Console.WriteLine("NoError = " + Asar.patch(path + arg2, ref ROM.DATA));
-            Asarerror[] errors = Asar.geterrors();
-            foreach (Asarerror e in errors)
+            
+
+            if (fname == "")
             {
-                Console.WriteLine(e.Rawerrdata);
+                Console.WriteLine("NoError = " + Asar.patch(path + arg2, ref ROM.DATA));
+                Asarerror[] errors = Asar.geterrors();
+                foreach (Asarerror e in errors)
+                {
+                    Console.WriteLine(e.Rawerrdata);
+                }
+                FileStream fs = new FileStream(path + "//TestROM//working.sfc", FileMode.OpenOrCreate, FileAccess.Write);
+                fs.Write(ROM.DATA, 0, ROM.DATA.Length);
+                fs.Close();
             }
-            FileStream fs = new FileStream(path + "//TestROM//working.sfc", FileMode.OpenOrCreate, FileAccess.Write);
-            fs.Write(ROM.DATA, 0, ROM.DATA.Length);
-            fs.Close();
+            else
+            {
+                Console.WriteLine("NoError = " + Asar.patch(path + arg2, ref ROM.DATA));
+                Asarerror[] errors = Asar.geterrors();
+                foreach (Asarerror e in errors)
+                {
+                    Console.WriteLine(e.Rawerrdata);
+                }
+                Console.WriteLine("NoError "+fname);
+                FileStream fs = new FileStream(fname, FileMode.OpenOrCreate, FileAccess.Write);
+                fs.Write(ROM.DATA, 0, ROM.DATA.Length);
+                fs.Close();
+            }
+
 
             Asar.close();
             /*var process = new Process();

@@ -39,9 +39,6 @@ namespace ZScream_Exporter
             RegionId.GenerateRegion();
             ConstantsReader.SetupRegion(RegionId.myRegion, "../../");
 
-            
-
-
             all_rooms = new RoomSave[296];
             all_maps = new MapSave[160];
             CheckGameTitle();
@@ -52,6 +49,7 @@ namespace ZScream_Exporter
             TextData.readAllText();
             LoadedProjectStatistics.texts = TextData.messages.Count;
             SaveJson s = new SaveJson(path,rompath,all_rooms, all_maps, null, TextData.messages.ToArray(), overworld);
+            MessageBox.Show("Project creation successful.");
         }
 
         public void LoadDungeonsRooms()

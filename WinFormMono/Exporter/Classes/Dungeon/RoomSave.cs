@@ -73,7 +73,7 @@ namespace ZScream_Exporter
         public void isdamagePit()
         {
             int pitCount = (ROM.DATA[ConstantsReader.GetAddress("pit_count")] / 2);
-            int pitPointer = (ROM.DATA[ConstantsReader.GetAddress("pit_pointer") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("pit_pointer") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("pit_pointer")]);
+            int pitPointer = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("pit_pointer"));
             pitPointer = Addresses.snestopc(pitPointer);
             for (int i = 0; i < pitCount; i++)
             {
@@ -134,14 +134,11 @@ namespace ZScream_Exporter
 
         public void addlistBlock(ref byte[] blocksdata, int maxCount)
         {
-            int pos1 = (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer1") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer1") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer1")]);
-            pos1 = Addresses.snestopc(pos1);
-            int pos2 = (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer2") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer2") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer2")]);
-            pos2 = Addresses.snestopc(pos2);
-            int pos3 = (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer3") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer3") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer3")]);
-            pos3 = Addresses.snestopc(pos3);
-            int pos4 = (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer4") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer4") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("blocks_pointer4")]);
-            pos4 = Addresses.snestopc(pos4);
+            int pos1 = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("blocks_pointer1")),
+                pos2 = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("blocks_pointer2")),
+                pos3 = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("blocks_pointer3")),
+                pos4 = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("blocks_pointer4"));
+
             for (int i = 0; i < 0x80; i += 1)
             {
                 blocksdata[i] = (ROM.DATA[i + pos1]);
@@ -253,7 +250,8 @@ namespace ZScream_Exporter
 
         public void loadChests(ref List<ChestData> chests_in_room)
         {
-            int cpos = (ROM.DATA[ConstantsReader.GetAddress("chests_data_pointer1") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("chests_data_pointer1") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("chests_data_pointer1")]);
+            int cpos = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("chests_data_pointer1"));
+
             cpos = Addresses.snestopc(cpos);
             int clength = (ROM.DATA[ConstantsReader.GetAddress("chests_length_pointer") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("chests_length_pointer")]);
 
@@ -404,7 +402,8 @@ namespace ZScream_Exporter
         public void loadHeader()
         {
             //address of the room header
-            int headerPointer = (ROM.DATA[ConstantsReader.GetAddress("room_header_pointer") + 2] << 16) + (ROM.DATA[ConstantsReader.GetAddress("room_header_pointer") + 1] << 8) + (ROM.DATA[ConstantsReader.GetAddress("room_header_pointer")]);
+
+            int headerPointer = AddressLoROM.SnesToPc(ConstantsReader.GetAddress("room_header_pointer"));
             headerPointer = Addresses.snestopc(headerPointer);
             int address = (ROM.DATA[ConstantsReader.GetAddress("room_header_pointers_bank")] << 16) +
                             (ROM.DATA[(headerPointer + 1) + (index * 2)] << 8) +

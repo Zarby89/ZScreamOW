@@ -45,35 +45,27 @@ namespace ZScream_Exporter
             text[0] = "";
             //File.WriteAllText(ProjectDirectorySlash + "Project.zscr", writeProjectConfig());
             File.WriteAllText(ProjectDirectorySlash + "Project.zscr", JsonConvert.SerializeObject(text));
-            Task[] tasks = new Task[20];
 
-            tasks[0] = Task.Run(() => { writeRooms(ProjectDirectorySlash); });
-            tasks[1] = Task.Run(() => { writeEntrances(ProjectDirectorySlash); });
-            tasks[2] = Task.Run(() => { writeOverworldEntrances(ProjectDirectorySlash); });
-            tasks[3] = Task.Run(() => { writeOverworldExits(ProjectDirectorySlash); });
-            tasks[4] = Task.Run(() => { writeOverworldHoles(ProjectDirectorySlash); });
-            tasks[5] = Task.Run(() => { writeText(ProjectDirectorySlash); });
-            tasks[6] = Task.Run(() => { writePalettes(ProjectDirectorySlash); });
-            tasks[7] = Task.Run(() => { writeGfx(ProjectDirectorySlash); });
-            tasks[8] = Task.Run(() => { writeOverworldTiles16(ProjectDirectorySlash); });
-            tasks[9] = Task.Run(() => { writeOverworldMaps(ProjectDirectorySlash); });
-            tasks[10] = Task.Run(() => { writeOverworldConfig(ProjectDirectorySlash); });
-            tasks[11] = Task.Run(() => { writeOverworldGroups(ProjectDirectorySlash); });
-            tasks[12] = Task.Run(() => { writeOverworldGroups2(ProjectDirectorySlash); });
-            tasks[13] = Task.Run(() => { writeOverworldSpriteset(ProjectDirectorySlash); });
-            tasks[14] = Task.Run(() => { writeOverworldSprites(ProjectDirectorySlash); });
-            tasks[15] = Task.Run(() => { writeOverworldItems(ProjectDirectorySlash); });
-            tasks[16] = Task.Run(() => { writeOverworldTilesType(ProjectDirectorySlash); });
-            tasks[17] = Task.Run(() => { writeOverlays(ProjectDirectorySlash); });
-            tasks[18] = Task.Run(() => { writeASMstuff(ProjectDirectorySlash,romPath); });
-            tasks[19] = Task.Run(() => { writeTransportstuff(ProjectDirectorySlash); });
-            
-
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                tasks[i].Wait();
-            }
-
+            writeRooms(ProjectDirectorySlash);
+            writeEntrances(ProjectDirectorySlash);
+            writeOverworldEntrances(ProjectDirectorySlash);
+            writeOverworldExits(ProjectDirectorySlash);
+            writeOverworldHoles(ProjectDirectorySlash);
+            writeText(ProjectDirectorySlash);
+            writePalettes(ProjectDirectorySlash);
+            writeGfx(ProjectDirectorySlash);
+            writeOverworldTiles16(ProjectDirectorySlash);
+            writeOverworldMaps(ProjectDirectorySlash);
+            writeOverworldConfig(ProjectDirectorySlash);
+            writeOverworldGroups(ProjectDirectorySlash);
+            writeOverworldGroups2(ProjectDirectorySlash);
+            writeOverworldSpriteset(ProjectDirectorySlash);
+            writeOverworldSprites(ProjectDirectorySlash);
+            writeOverworldItems(ProjectDirectorySlash);
+            writeOverworldTilesType(ProjectDirectorySlash);
+            writeOverlays(ProjectDirectorySlash);
+            writeASMstuff(ProjectDirectorySlash, romPath);
+            writeTransportstuff(ProjectDirectorySlash);
         }
 
         public void writeTransportstuff(string path)

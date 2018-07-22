@@ -58,10 +58,6 @@ namespace ZScream_Exporter
              * Conker's High Rule Tail is one example.
              */
 
-            myRegion = 1;
-            return;
-
-
             myRegion = (int)Region.Invalid;
             for (int i = 0; i < dialogueCode.Length; i++)
             {

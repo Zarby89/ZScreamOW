@@ -169,7 +169,7 @@
     <data id="startingentrance_yscroll">0x1480D</data> <!--0x14AA9  : 2bytes each room-->
     <data id="startingentrance_xscroll">0x14917</data> <!--0x14BB3  : 2bytes-->
     <data id="startingentrance_yposition">0x14A21</data> <!--0x14CBD 2bytes-->
-    <data id="startingentrance_xposition">0x14DC7-0x29C</data><!--0x14DC7 2bytes-->
+    <data id="startingentrance_xposition">0x14B2B</data><!--0x14DC7 2bytes-->
     <data id="startingentrance_camerayposition">14B2B</data><!--0x14ED1 2bytes-->
     <data id="startingentrance_cameraxposition">14D3F</data><!--0x14FDB 2bytes-->
 

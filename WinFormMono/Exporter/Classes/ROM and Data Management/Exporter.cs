@@ -14,7 +14,6 @@ namespace ZScream_Exporter
 {
     public class Exporter
     {
-
         private RichTextBox logTextbox;
         private ProgressBar progressBar;
         private Overworld overworld = new Overworld();

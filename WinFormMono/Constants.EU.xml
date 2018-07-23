@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!--===========================================================================================-->
+    <!--GFX Related Variables-->
+    <!--===========================================================================================-->
+	<data id="tile_address"></data>
+    <data id="tile_address_floor"></data>
+    <data id="subtype1_tiles"></data>
+    <data id="subtype2_tiles"></data>
+    <data id="subtype3_tiles"></data>
+	<data id="gfx_animated_pointer"></data>
+	
+	<data id="gfx_1_pointer"></data> <!--2byte pointer bank 00 -> pc 0x4FC0-->
+    <data id="gfx_2_pointer"></data> <!--509F-->
+    <data id="gfx_3_pointer"></data> <!--517E-->
+	<data id="hud_palettes"></data>
+	
+	<!--===========================================================================================-->
+    <!--Overworld Related Variables-->
+    <!--===========================================================================================-->
+
+	<data id="compressedAllMap32PointersHigh"></data> <!--LONGPointers all tiles of maps[High] (mapid* 3)-->
+    <data id="compressedAllMap32PointersLow"></data> <!--LONGPointers all tiles of maps[Low] (mapid* 3)-->
+    <data id="overworldgfxGroups"></data>
+	
+	<data id="map16Tiles"></data>
+    <data id="map32TilesTL"></data>
+    <data id="map32TilesTR"></data>
+    <data id="map32TilesBL"></data>
+    <data id="map32TilesBR"></data>
+	
+	<data id="overworldPalGroup1"></data>
+    <data id="overworldPalGroup2"></data>
+    <data id="overworldPalGroup3"></data>
+	
+	<data id="overworldMapPalette"></data> <!--JP-->
+    <data id="overworldSpritePalette"></data>
+	<data id="overworldMapPaletteGroup"></data>
+    <data id="overworldSpriteset"></data>
+    <data id="overworldSpritesBegining"></data>
+    <data id="overworldSpritesZelda"></data>
+    <data id="overworldSpritesAgahnim"></data>
+    <data id="overworldItemsBank"></data>
+    <data id="overworldMapSize"></data> <!--JP-->
+    <data id="hardcodedGrassLW"></data>
+    <data id="hardcodedGrassDW"></data><!--map>40-->
+    <data id="hardcodedGrassSpecial"></data><!--map 183,182,180-->
+    <data id="mapGfx"></data>
+    <data id="overlayPointers"></data>
+    <data id="overlayPointersBank"></data>
+    <data id="overworldTilesType"></data>
+    <data id="overworldMessages"></data><!--short value-->
+    <!--===========================================================================================-->
+    <!--Overworld Exits/Entrances Variables-->
+    <!--===========================================================================================-->
+
+	<data id="OWExitRoomId"></data>
+    <data id="OWExitMapId"></data>
+    <data id="OWExitVram"></data>
+    <data id="OWExitYScroll"></data>
+    <data id="OWExitXScroll"></data>
+    <data id="OWExitYPlayer"></data>
+    <data id="OWExitXPlayer"></data>
+    <data id="OWExitYCamera"></data>
+    <data id="OWExitXCamera"></data>
+    <data id="OWExitUnk1"></data>
+    <data id="OWExitUnk2"></data>
+    <data id="OWExitDoorType1"></data>
+    <data id="OWExitDoorType2"></data>
+
+	<data id="OWEntranceMap"></data>
+    <data id="OWEntrancePos"></data>
+    <data id="OWEntranceEntranceId"></data>
+    <data id="OWHolePos"></data><!--(0x13 entries, 2 bytes each) modified(less 0x400) map16 coordinates for each hole-->
+    <data id="OWHoleArea"></data><!--(0x13 entries, 2 bytes each) corresponding area numbers for each hole-->
+    <data id="OWHoleEntrance"></data><!--(0x13 entries, 1 byte each)  corresponding entrance numbers-->
+
+    <!--===========================================================================================-->
+    <!--Dungeon Related Variables-->
+    <!--===========================================================================================-->
+    <!--That could be turned into a pointer : -->
+    <data id="dungeons_palettes_groups"></data>
+    <data id="dungeons_main_bg_palette_pointers"></data>
+    <data id="dungeons_palettes"></data>
+
+	<!--That could be turned into a pointer : -->
+    <data id="room_items_pointers"></data>
+
+	<data id="rooms_sprite_pointer"></data>
+    <data id="room_header_pointer"></data><!--LONG-->
+    <data id="room_header_pointers_bank"></data> <!-- todo: find this
+
+    <data id="gfx_groups_pointer"></data>
+    <data id="room_object_layout_pointer"></data>
+	
+	<data id="room_object_pointer"></data><!--Long pointer-->
+
+	<data id="chests_length_pointer"></data>
+    <data id="chests_data_pointer1"></data>
+	
+	<data id="room_objects_section1"></data>
+    <data id="room_objects_section2"></data>
+    <data id="room_objects_section3"></data>
+
+    <data id="room_objects_section1_max"></data>
+    <data id="room_objects_section2_max"></data>
+    <data id="room_objects_section3_max"></data>
+	
+	<data id="chests_data_pointer2"></data>
+    <data id="chests_data_pointer3"></data>
+
+	<data id="blocks_length"></data><!--word value -->
+	<data id="blocks_pointer1"></data>
+    <data id="blocks_pointer2"></data>
+    <data id="blocks_pointer3"></data>
+    <data id="blocks_pointer4"></data>
+	
+    <data id="torch_data"></data>
+    <data id="torches_length_pointer"></data>
+
+	<data id="sprite_blockset_pointer"></data>
+	<data id="sprites_data"></data>
+    <data id="sprites_data_empty_room"></data>
+
+	<data id="pit_pointer"></data><!-- Same as USA version-->
+	<data id="pit_count"></data><!-- Same as USA version-->
+	
+	<data id="doorPointers"></data>
+
+	<!--doors-->
+    <data id="door_gfx_up"></data>
+    <!---->
+	<data id="door_gfx_down"></data>
+    <data id="door_gfx_cavexit_down"></data>
+    <data id="door_gfx_left"></data>
+    <data id="door_gfx_right"></data>
+	
+    <data id="door_pos_up"></data>
+    <data id="door_pos_down"></data>
+    <data id="door_pos_left"></data>
+    <data id="door_pos_right"></data>
+	
+	<!--===========================================================================================-->
+    <!--Dungeon Entrances Related Variables-->
+    <!--===========================================================================================-->
+    <data id="entrance_room"></data> <!--word value for each room-->
+    <data id="entrance_scrolledge"></data> <!--0x14681  : 8 bytes per room, HU, FU, HD, FD, HL, FL, HR, FR-->
+    <data id="entrance_yscroll"></data> <!--2bytes each room-->
+    <data id="entrance_xscroll"></data> <!--2bytes-->
+    <data id="entrance_yposition"></data><!--2bytes-->
+    <data id="entrance_xposition"></data><!--2bytes-->
+    <data id="entrance_camerayposition"></data><!--2bytes-->
+    <data id="entrance_cameraxposition"></data><!--2bytes-->
+    
+	<data id="entrance_gfx_group"></data>
+	
+	<data id="entrance_blockset"></data><!--1byte-->
+    <data id="entrance_floor"></data><!--1byte-->
+    <data id="entrance_dungeon"></data><!--1byte (dungeon id)-->
+    <data id="entrance_door"></data><!--1byte-->
+    <data id="entrance_ladderbg"></data> <!--1 byte, - - -b - - -a b">bg2, a">need to check -_- -->
+    <data id="entrance_scrolling"></data> <!--1byte - -h - - -v- -->
+    <data id="entrance_scrollquadrant"></data><!--1byte-->
+    <data id="entrance_exit"></data> <!--2byte word-->
+    <data id="entrance_music"></data>
+
+    <data id="startingentrance_room"></data> <!--0x158D2  : word value for each room-->
+    <data id="startingentrance_scrolledge"></data> <!--0x158E0  : 8 bytes per room, HU, FU, HD, FD, HL, FL, HR, FR-->
+    <data id="startingentrance_yscroll"></data> <!--0x14AA9  : 2bytes each room-->
+    <data id="startingentrance_xscroll"></data> <!--0x14BB3  : 2bytes-->
+    <data id="startingentrance_yposition"></data> <!--0x14CBD 2bytes-->
+    <data id="startingentrance_xposition"></data><!--0x14DC7 2bytes-->
+    <data id="startingentrance_camerayposition"></data><!--0x14ED1 2bytes-->
+    <data id="startingentrance_cameraxposition"></data><!--0x14FDB 2bytes-->
+
+    <data id="startingentrance_blockset"></data> <!--0x150E5 1byte-->
+    <data id="startingentrance_floor"></data> <!--0x1516A 1byte-->
+    <data id="startingentrance_dungeon"></data><!--0x151EF 1byte (dungeon id)-->
+
+    <data id="startingentrance_door"></data> <!--0x15274 1byte-->
+
+    <data id="startingentrance_ladderbg"></data> <!--0x152F9  : 1 byte, - - - b - - - a b">bg2, a">need to check -_- -->
+    <data id="startingentrance_scrolling"></data><!--0x1537E : 1byte - - h - - -v - -->
+    <data id="startingentrance_scrollquadrant"></data> <!--0x15403 1byte-->
+    <data id="startingentrance_exit"></data> <!--0x15488  : 2byte word-->
+    <data id="startingentrance_music"></data> <!--0x15592-->
+    <data id="startingentrance_entrance"></data>
+	
+	<data id="items_data_start"></data>
+    <data id="items_data_end"></data>
+	<data id="initial_equipement"></data>
+	<data id="messages_id_dungeon"></data>
+</root>

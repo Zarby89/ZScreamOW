@@ -1,46 +1,72 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using ZScream_Exporter;
 
 namespace WinFormMono
 {
+    /// <summary>
+    /// Main form for the utility
+    /// </summary>
     public partial class MainForm : Form
     {
+        private const int SIZE = 0x200000;
         public MainForm()
         {
+            //Leaving this code here because it's a good way to test things
+            //out quickly. Just change the filepath.
+
+            /*string FilePath = @"";
+
+            FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+            int size = (int)fs.Length;
+            if (size < 0x200000)
+                size = 0x200000;
+            byte[] temp = new byte[size];
+            fs.Read(temp, 0, (int)size);
+            fs.Close();
+
+            ROM.SetRom(temp, out bool Headered);
+            RegionId.GenerateRegion();
+            ConstantsReader.SetupRegion((int)RegionId.myRegion, "../../");
+            roomHeader a = new roomHeader();*/
+
             InitializeComponent();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             overworldForm.Enabled = false;
-
-
         }
+
         OverworldForm overworldForm = new OverworldForm();
-        string loadedProject = "";
-        string emulatorPath = "";
-        string[] configs;
-        string[] allScriptsFiles;
-        List<string> scriptsActive = new List<string>();
-        List<string> scriptsDetected = new List<string>();
-        List<string> scriptsInformation = new List<string>();
+        string 
+            loadedProject = "",
+            emulatorPath = "";
+        string[] 
+            configs,
+            allScriptsFiles;
+        List<string> 
+            scriptsActive = new List<string>(),
+            scriptsDetected = new List<string>(),
+            scriptsInformation = new List<string>();
+
+        /// <summary>
+        /// Load a project
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog of = new OpenFileDialog();
             of.Filter = "ZScream Project (*.zscr)|*.zscr";
             if (of.ShowDialog() == DialogResult.OK)
             {
-
                 loadedProject = Path.GetDirectoryName(of.FileName);
                 configs = JsonConvert.DeserializeObject<string[]>(File.ReadAllText(loadedProject + "//Project.zscr"));
                 emulatorPath = configs[0];
@@ -48,7 +74,7 @@ namespace WinFormMono
                 overworldForm.setData(data);
                 overworldForm.Enabled = true;
                 allScriptsFiles = Directory.EnumerateFiles(loadedProject + "\\ASM").ToArray();
-                foreach(string script in allScriptsFiles)
+                foreach (string script in allScriptsFiles)
                 {
                     string f = Path.GetFileName(script);
                     if (f == "Main.asm")
@@ -58,22 +84,18 @@ namespace WinFormMono
                         {
                             if (s.Contains("incsrc"))
                             {
-                                string a = s.Remove(0, 7);
-                                scriptsActive.Add(a);
+                                scriptsActive.Add(s.Remove(0, 7));
                             }
                         }
                         continue;
                     }
-                    if (f == "Readme.txt") { continue; }
-                    scriptsDetected.Add(f);
+                    if (f != "Readme.txt")
+                        scriptsDetected.Add(f);
                 }
             }
-            else
-            {
-                return;
-            }
+            else return;
 
-            foreach(string s in scriptsDetected)
+            foreach (string s in scriptsDetected)
             {
                 //Create information of each scripts
                 StringBuilder information = new StringBuilder();
@@ -83,17 +105,9 @@ namespace WinFormMono
                 int id = 0;
                 foreach (string line in asmfileLines)
                 {
-                    
                     if (line.Contains(";#="))
                     {
-                        if (description == true)
-                        {
-                            description = false;
-                        }
-                        else
-                        {
-                            description = true;
-                        }
+                        description = !description;
                         continue;
                     }
                     if (description == true)
@@ -114,26 +128,21 @@ namespace WinFormMono
                                     if (addr.Contains(";")) //address is shorter than 6
                                     {
                                         addr = line.Substring(line.IndexOf('$') + 1, line.IndexOf(';') - line.IndexOf('$')); ;
-                                        
                                     }
                                     if (line.Contains(";"))
                                     {
                                         comment = line.Substring(line.IndexOf(';'), line.Length - line.IndexOf(';'));
                                     }
                                     int snesAddr = ParseHexString(addr);
-                                    int pcAddr = ZScream_Exporter.Addresses.snestopc(snesAddr);
-                                    information.AppendLine("SNES:"+snesAddr.ToString("X6") + " PC:" + pcAddr.ToString("X6") + " ;" + comment);
+                                    int pcAddr = AddressLoROM.SnesToPc(snesAddr);
+                                    information.AppendLine("SNES:" + snesAddr.ToString("X6") + " PC:" + pcAddr.ToString("X6") + " ;" + comment);
                                 }
                             }
                         }
                     }
-                    
                 }
+
                 scriptsInformation.Add(information.ToString());
-
-
-
-
 
                 //add the script in the script list
                 ToolStripItem item = scriptsToolStripMenuItem.DropDownItems.Add(s);
@@ -155,7 +164,6 @@ namespace WinFormMono
 
                 //add an information tab with tag value
 
-
                 id++;
             }
             Console.WriteLine(scriptsInformation[0]);
@@ -172,25 +180,26 @@ namespace WinFormMono
         private static int ParseHexString(string hexNumber)
         {
             hexNumber = hexNumber.Replace("x", string.Empty);
-            long result = 0;
-            long.TryParse(hexNumber, System.Globalization.NumberStyles.HexNumber, null, out result);
+            long.TryParse(hexNumber, System.Globalization.NumberStyles.HexNumber, null, out long result);
             return (int)result;
         }
 
+        /// <summary>
+        /// Launch the overwold window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void overworldEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (loadedProject != "")
             {
-            
-            overworldForm.MdiParent = this;
-            overworldForm.Show();
+                overworldForm.MdiParent = this;
+                overworldForm.Show();
             }
         }
 
         private void runTesttoolStripMenu_Click(object sender, EventArgs e)
         {
-            
-
             if (loadedProject == "")
             {
                 MessageBox.Show("You must have a project loaded first!", "Error");
@@ -214,32 +223,24 @@ namespace WinFormMono
             {
                 File.Delete(loadedProject + "//TestROM//working.sfc");
             }
-
-
-
+            
             FileStream fs = new FileStream(loadedProject + "//TestROM//test.sfc", FileMode.Open, FileAccess.Read);
             int size = (int)fs.Length;
-            if (size < 0x200000)
+            if (size < SIZE)
             {
-                size = 0x200000;
+                size = SIZE;
             }
             byte[] temp = new byte[size];
             fs.Read(temp, 0, (int)fs.Length);
             fs.Close();
 
-
-
-            ZScream_Exporter.ROM.SetRom(temp, out bool isHeadered);
+            ROM.SetRom(temp, out bool isHeadered);
 
             temp = null;
 
-            ZScream_Exporter.Importer importer = new ZScream_Exporter.Importer(loadedProject, ZScream_Exporter.ROM.DATA);
-            
-
+            Importer importer = new ZScream_Exporter.Importer(loadedProject, ZScream_Exporter.ROM.DATA);
 
             Process.Start(emulatorPath, loadedProject + "//TestROM//working.sfc");
-
-
         }
 
         private void setEmulatorPathToolStripMenuItem_Click(object sender, EventArgs e)
@@ -266,9 +267,9 @@ namespace WinFormMono
                 {
                     FileStream fs = new FileStream(of.FileName, FileMode.Open, FileAccess.Read);
                     int size = (int)fs.Length;
-                    if (size < 0x200000)
+                    if (size < SIZE)
                     {
-                        size = 0x200000;
+                        size = SIZE;
                     }
                     byte[] temp = new byte[size];
                     fs.Read(temp, 0, (int)size);
@@ -281,10 +282,7 @@ namespace WinFormMono
                     //read the ROM if you selected OK
 
                 }
-                else
-                {
-                    return;
-                }
+                else return;
             }
             MessageBox.Show("Select the folder you want to create your project in (multiples files will be created)");
 
@@ -294,19 +292,12 @@ namespace WinFormMono
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-
-
-                    exporter = new ZScream_Exporter.Exporter(ZScream_Exporter.ROM.DATA,fbd.SelectedPath,rompath);
+                    exporter = new ZScream_Exporter.Exporter(ZScream_Exporter.ROM.DATA, fbd.SelectedPath, rompath);
                 }
-                else
-                {
-                    return;
-                }
+                else return;
             }
 
             exporter = null;
-           
-
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -339,19 +330,19 @@ namespace WinFormMono
 
             FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
             int size = (int)fs.Length;
-            if (size < 0x200000)
+            if (size < SIZE)
             {
-                size = 0x200000;
+                size = SIZE;
             }
             byte[] temp = new byte[size];
             fs.Read(temp, 0, (int)fs.Length);
             fs.Close();
 
-            ZScream_Exporter.ROM.SetRom(temp, out bool isHeadered);
+            ROM.SetRom(temp, out bool isHeadered);
 
             temp = null;
 
-            ZScream_Exporter.Importer importer = new ZScream_Exporter.Importer(loadedProject, ZScream_Exporter.ROM.DATA,fname);
+            Importer importer = new ZScream_Exporter.Importer(loadedProject, ZScream_Exporter.ROM.DATA, fname);
 
             MessageBox.Show("Patched successfully " + fname.ToString());
         }

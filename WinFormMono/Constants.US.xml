@@ -125,8 +125,8 @@
     <data id="room_objects_section3_max">0x1FFFF</data>
 
 
-    <!--<data id="chests_data_pointer2">0xEC0A</data> Disabled for now could be used for expansion-->
-    <!--<data id="chests_data_pointer3">0xEC10</data> Disabled for now could be used for expansion-->
+    <data id="chests_data_pointer2">0xEC0A</data>
+    <data id="chests_data_pointer3">0xEC10</data>
 
     <data id="blocks_length">0x8896</data><!--word value -->
     <data id="blocks_pointer1">0x15AFA</data>

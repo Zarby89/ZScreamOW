@@ -67,6 +67,30 @@
     <Compile Include="Exporter\Classes\Dungeon\RoomSave.cs" />
     <Compile Include="Exporter\Classes\Dungeon\Room_Object.cs" />
     <Compile Include="Exporter\Classes\Dungeon\Room_Sprite.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Blocks\indoor_blocks.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Blocks\i_block.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Chests\indoor_chests.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Chests\i_chest.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\DamagePits\indoor_damagepits.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Dungeon.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Dungeon_constants.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Dungeon_master.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\frameWork.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Items\indoor_items.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Items\i_item.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\LOZobject.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Objects\i_object_type1.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Objects\i_object_type2.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Objects\Layout.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Objects\object_data.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Objects\room_object_header.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\RoomHeader\roomHeader.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\RoomHeader\i_roomHeader.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Sprites\indoor_sprites.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Sprites\i_sprite.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Telepathy\indoor_telepathy.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Torches\indoor_torches.cs" />
+    <Compile Include="Exporter\Classes\Dungeon_trovsky\Torches\i_torch.cs" />
     <Compile Include="Exporter\Classes\Entrance.cs" />
     <Compile Include="Exporter\Classes\GFX.cs" />
     <Compile Include="Exporter\Classes\LoadedProjectStatistics.cs" />
@@ -84,7 +108,6 @@
     <Compile Include="Exporter\Classes\ROM and Data Management\PointerRead.cs" />
     <Compile Include="Exporter\Classes\ROM and Data Management\RegionId.cs" />
     <Compile Include="Exporter\Classes\ROM and Data Management\ROM.cs" />
-    <Compile Include="Exporter\Classes\ROM and Data Management\RomIO.cs" />
     <Compile Include="Exporter\Classes\ROM and Data Management\ROMStructure.cs" />
     <Compile Include="Exporter\Classes\ROM and Data Management\SaveJson.cs" />
     <Compile Include="Exporter\Classes\ROM and Data Management\SnesChecksum.cs" />
@@ -186,6 +209,7 @@
     </Compile>
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporter\GUI\form_JSON_manager.resx">
       <DependentUpon>form_JSON_manager.cs</DependentUpon>

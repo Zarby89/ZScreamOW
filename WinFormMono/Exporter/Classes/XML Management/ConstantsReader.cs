@@ -8,12 +8,12 @@ namespace ZScream_Exporter
     {
         private static string[] cultureNames = new string[]
         {
-        "JP",
-        "US",
-        "GR",
-        "FR",
-        "EU",
-        "CA"
+            "JP",
+            "US",
+            "GR",
+            "FR",
+            "EU",
+            "CA"
         };
 
         private static XMLManager xml;
@@ -53,18 +53,24 @@ namespace ZScream_Exporter
         /// <returns></returns>
         public static int GetAddress(string identifer)
         {
-            const string prefix = "0x";
-            string value = xml.GetString(identifer).Replace(prefix, "");
-
-            //Check US XML if the value is null in the other region's XML
-            if (value == "" && currentRegion != (int)RegionId.Region.USA)
+            if (xml != null)
             {
-                int tempRegion = currentRegion;
-                currentRegion = (int)RegionId.Region.USA;
-                value = new XMLManager(folderLocation + XMLFileName).GetString(identifer).Replace(prefix, "");
-                currentRegion = tempRegion;
+                const string prefix = "0x";
+
+                string RawString = xml.GetString(identifer);
+                string value = RawString.Replace(prefix, "");
+
+                //Check US XML if the value is null in the other region's XML
+                if (value == "" && currentRegion != (int)RegionId.Region.USA)
+                {
+                    int tempRegion = currentRegion;
+                    currentRegion = (int)RegionId.Region.USA;
+                    value = new XMLManager(folderLocation + XMLFileName).GetString(identifer).Replace(prefix, "");
+                    currentRegion = tempRegion;
+                }
+                return ((value == "") ? nullAddress : Convert.ToInt32(value, 16));
             }
-            return ((value == "") ? nullAddress : Convert.ToInt32(value, 16));
+            else throw new Exception("Run \"SetupRegion\" first.");
         }
     }
 }
